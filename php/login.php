@@ -24,6 +24,10 @@ function db_connect() {
 function check_user_exists($email, $link) {
     $query = "SELECT user_exists('".$email."')"; 
     $result = mysqli_query($link, $query); 
+    if (!$result) {
+        echo "ERROR_QUERY_FAILED";
+        return true; 
+    }
     $row = mysqli_fetch_array($result); 
     $user_exists = $row[0];
     if ($user_exists == 1) {

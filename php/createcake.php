@@ -32,7 +32,7 @@ function get_options($link) {
     $options = array(); 
 
     while ($row = mysqli_fetch_assoc($result)) {
-        if (!isset($options[$row['category'])) {
+        if (!isset($options[$row['category']])) {
             $options[$row['category']] = array(); 
         }
         array_push($options[$row['category']], $row['value']); 
