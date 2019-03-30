@@ -1,0 +1,12 @@
+bg1.jpg: https://www.shutterstock.com/image-vector/cake-seamless-pattern-can-be-used-396860518
+chocolate_cupcakes.jpg: Photo by Sheelah Brennan on Unsplash
+chocolate_cookies.jpg: Photo by Jonathan Farber on Unsplash
+cake_on_plates.jpg: Photo by Food Photographer | Jennifer Pallian on Unsplash
+strawberry_cake_on_plate: Photo by Dilyara Garifullina on Unsplash
+White-Chocolate-Krispie_Treats-Image.jpg: https://www.thekitchenismyplayground.com/2016/11/christmas-white-chocolate-dipped-rice-krispie-treats.html
+chocolate_dipped_pretzel_rods.jpg: https://www.berries.com/product/-30045671?cobrand=SSS&ssid=4&REF=SHBFeedGooglePLA_30045671&cvosrc=pla.google.30045671&CAWELAID=1808744178&gclid=CjwKCAjwycfkBRAFEiwAnLX5IXdZyTKbIsGgRfKBpqGZkgGJPbFyfrv72MOdD-CXqLZbLjxnjh6ztBoCXQkQAvD_BwE&gclsrc=aw.ds
+cake_balls.jpg: https://www.delish.com/cooking/recipe-ideas/a25621097/cake-balls-recipe/
+chocolate_chip_cookies.jpg: https://www.handletheheat.com/bakery-style-chocolate-chip-cookies/
+peanut_butter_cookies.jpg: https://www.landolakes.com/recipe/17171/classic-peanut-butter-cookies/
+frosted_sugar_cookies.jpg: https://www.cookingclassy.com/perfect-frosted-sugar-cookies/
+snickerdoodles.jpg: https://cookiesandcups.com/perfect-snickerdoodles/

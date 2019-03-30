@@ -1,0 +1,62 @@
+nav {
+    background-color : pink; 
+    color : white; 
+}
+
+a.nav-link {
+    color : white; 
+}
+
+img.navbar-brand {
+    width : 125px; 
+    height : 125px; 
+}
+
+.full-width {
+    width : 100%; 
+}
+
+img.dessert-item {
+    width : 125px; 
+    height : 125px; 
+    margin : 10px; 
+}
+
+body {
+    background-image : url("../images/bg1.jpg");
+}
+
+h1 {
+    margin : 20px; 
+}
+
+main {
+    margin-top : 20px; 
+    align-items : center;
+    overflow-y : auto; 
+    max-height : 80%; 
+}
+
+form {
+    padding : 20px; 
+    background-image : url("../images/bg1.jpg");
+    backdrop-filter : blur(8px); 
+    -webkit-backdrop-filter : blur(8px); 
+}
+
+.inside-form {
+    filter : none; 
+    -webkit-filter : none; 
+}
+
+input.form-control {
+    background-color : whitesmoke;
+}
+
+button {
+    margin : 0 auto; 
+}
+
+a:link {
+    color : white; 
+}
