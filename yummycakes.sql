@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 30, 2019 at 09:49 PM
+-- Generation Time: Mar 31, 2019 at 05:39 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -33,6 +33,16 @@ END$$
 --
 -- Functions
 --
+CREATE DEFINER=`root`@`localhost` FUNCTION `create_new_cake` (`flavor` INT, `frosting` INT, `filling` INT) RETURNS INT(11) NO SQL
+BEGIN
+    INSERT INTO `cake` (`flavor`, `frosting`, `filling`, `preset`, `available`) 
+        VALUES (flavor, frosting, filling, 0, 1); 
+    SELECT LAST_INSERT_ID() INTO @cake_id; 
+    INSERT INTO `dessert_item` (`name`, `description`, `price`, `available`, `cake`) 
+        VALUES ('Custom Cake', 'Custom Cake', 0.32, 1, @cake_id); 
+    RETURN LAST_INSERT_ID();
+END$$
+
 CREATE DEFINER=`root`@`localhost` FUNCTION `start_order` (`user` VARCHAR(250), `total_cost` DECIMAL(10,2), `placed` DATE, `expected` DATE, `comments` VARCHAR(500)) RETURNS TINYINT(1) BEGIN 
 	INSERT INTO `dessert_order` (`user`, `total_cost`, `placed`, `expected`, `comments`) 
     VALUES (user, total_cost, placed, expected, comments);

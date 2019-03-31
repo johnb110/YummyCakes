@@ -35,10 +35,55 @@ function get_options($link) {
         if (!isset($options[$row['category']])) {
             $options[$row['category']] = array(); 
         }
-        array_push($options[$row['category']], $row['value']); 
+        $value_id = array(
+            "id"=>$row['custom'],
+            "value"=>$row['value']
+        );
+        array_push($options[$row['category']], $value_id); 
     }
 
     echo json_encode($options); 
+}
+
+function submit_cake($link, $selections) {
+    $flavor = $selections['flavor']; 
+    $frosting = $selections['frosting'];
+    $filling = $selections['filling'];
+    $query = "SELECT cake FROM cake WHERE flavor=$flavor AND frosting=$frosting AND filling=$filling";
+    $result = mysqli_query($link, $query); 
+    if (!$result) {
+        echo "ERROR_QUERY_FAILED"; 
+        exit(); 
+    }
+    $item_id = -1; 
+    if (mysqli_num_rows($result) != 0) {
+        $cake_id = $result['cake'];
+        $query = "SELECT dessert_item FROM dessert_item WHERE cake=$cake_id"; 
+        $result = mysqli_query($link, $query); 
+        if (!$result) {
+            echo "ERROR_QUERY_FAILED"; 
+            exit(); 
+        }
+        $row = mysqli_fetch_assoc($result); 
+        $item_id = $row['dssert_item']; 
+    }
+    else {
+        $query = "SELECT create_new_cake($flavor, $frosting, $filling)";
+        $result = mysqli_query($link, $query); 
+        if (!$result) {
+            echo "ERROR_QUERY_FAILED"; 
+            exit(); 
+        }
+        $row = mysqli_fetch_array($result); 
+        $item_id = $row[0];
+    }
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array(); 
+    }
+    if (!isset($_SESSION['cart'][$item_id])) {
+        $_SESSION['cart'][$item_id] = 0; 
+    }
+    $_SESSION['cart'][$item_id] += 1; 
 }
 
 session_start(); 
@@ -57,6 +102,18 @@ switch ($_POST['action']) {
         }
         get_options($link); 
         break;
+    case "submit":
+        if (!isset($_POST['select'])) {
+            echo "ERROR_NO_SELECTION";
+            exit(); 
+        }
+        $selections = json_decode($_POST['select']);
+        $link = db_connect(); 
+        if (!$link) {
+            echo "ERROR_DB_CONNECT"; 
+            exit(); 
+        }
+        break; 
 }
 
 ?>
