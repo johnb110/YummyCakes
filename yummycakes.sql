@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2019 at 05:39 AM
+-- Generation Time: Apr 01, 2019 at 05:31 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -38,8 +38,12 @@ BEGIN
     INSERT INTO `cake` (`flavor`, `frosting`, `filling`, `preset`, `available`) 
         VALUES (flavor, frosting, filling, 0, 1); 
     SELECT LAST_INSERT_ID() INTO @cake_id; 
+    SELECT value INTO @flv_name FROM custom WHERE `custom`=flavor;
+    SELECT value INTO @fst_name FROM `custom` WHERE `custom`=frosting;
+    SELECT value INTO @fll_name FROM `custom` WHERE `custom`=filling;
+    SET @desc = CONCAT('Flavor: ',@flv_name,', Frosting: ',@fst_name,', Filling: ',@fll_name);
     INSERT INTO `dessert_item` (`name`, `description`, `price`, `available`, `cake`) 
-        VALUES ('Custom Cake', 'Custom Cake', 0.32, 1, @cake_id); 
+        VALUES ('Custom Cake', @desc, 0.32, 1, @cake_id); 
     RETURN LAST_INSERT_ID();
 END$$
 
@@ -74,6 +78,13 @@ CREATE TABLE `cake` (
   `preset` tinyint(1) NOT NULL,
   `available` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cake`
+--
+
+INSERT INTO `cake` (`cake`, `flavor`, `frosting`, `filling`, `preset`, `available`) VALUES
+(5, 61, 67, 73, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -137,7 +148,8 @@ INSERT INTO `dessert_item` (`dessert_item`, `name`, `image_file_name`, `descript
 (29, 'Peanut Butter Cookies', 'peanut_butter_cookies.jpg', 'Peanut butter-flavored cookies (6)', '5.99', 1, NULL),
 (30, 'Sugar Cookies', 'frosted_sugar_cookies.jpg', 'Classic sugar cookies, with pink frosting and sprinkles (6)', '5.99', 1, NULL),
 (31, 'Snickerdoodles', 'snickerdoodles.jpg', 'Cookies baked with cinnamon and sugar (6)', '5.99', 1, NULL),
-(32, 'Chocolate Cupcakes', 'chocolate_cupcakes.jpg', 'Chocolate cupcakes with chocolate frosting (4)', '4.99', 1, NULL);
+(32, 'Chocolate Cupcakes', 'chocolate_cupcakes.jpg', 'Chocolate cupcakes with chocolate frosting (4)', '4.99', 1, NULL),
+(34, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 5);
 
 -- --------------------------------------------------------
 
@@ -276,7 +288,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cake`
 --
 ALTER TABLE `cake`
-  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `custom`
@@ -288,7 +300,7 @@ ALTER TABLE `custom`
 -- AUTO_INCREMENT for table `dessert_item`
 --
 ALTER TABLE `dessert_item`
-  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `dessert_order`

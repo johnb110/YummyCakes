@@ -24,26 +24,47 @@ function db_connect() {
 }
 
 function get_cart_items($link) {
-    if (!isset($_SESSION['cart'])) {
-        return; 
-    }
-    $cart_items = array(); 
-    foreach ($_SESSION['cart'] as $id => $quantity) {
-        $query = "SELECT dessert_item as id, name, description, price FROM dessert_item WHERE dessert_item=$id";
-        $result = mysqli_query($link, $query);
-        if (!$result) {
-            echo "ERROR_QUERY_FAILED"; 
-            return; 
+    $cart = array(); 
+    $cart_items = array();
+    if (isset($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $id => $quantity) {
+            $item_info = get_item_info($link, $id); 
+            if (is_null($item_info)) {
+                continue; 
+            }
+            $item_info['quantity'] = $quantity; 
+            array_push($cart_items, $item_info); 
         }
-        $row = mysqli_fetch_assoc($result); 
-        if (!$row) {
-            //echo "ERROR_ITEM_NOT_FOUND"; 
-            continue; 
-        }
-        $row['quantity'] = $quantity; 
-        array_push($cart_items, $row); 
     }
-    echo json_encode($cart_items); 
+    $cart['items'] = $cart_items; 
+    $cakes = array();
+    if (isset($_SESSION['cakes'])) {
+        foreach ($_SESSION['cakes'] as $cake => $sizes) {
+            $cake_info = get_item_info($link, $cake); 
+            if (is_null($cake_info)) {
+                continue; 
+            }
+            $cake_info['sizes'] = $sizes; 
+            array_push($cakes, $cake_info); 
+        }
+    }
+    $cart['cakes'] = $cakes; 
+    echo json_encode($cart); 
+}
+
+function get_item_info($link, $id) {
+    $query = "SELECT dessert_item AS id, name, description, price FROM dessert_item WHERE dessert_item=$id";
+    $result = mysqli_query($link, $query);
+    if (!$result) {
+        //echo "ERROR_QUERY_FAILED"; 
+        return null; 
+    }
+    $row = mysqli_fetch_assoc($result); 
+    if (!$row) {
+        //echo "ERROR_ITEM_NOT_FOUND"; 
+        return null; 
+    }
+    return $row; 
 }
 
 function update_cart($item, $quantity) {

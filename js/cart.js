@@ -1,10 +1,15 @@
 var $user = ""; 
 
 class CartItem {
-    constructor(json) {
+    constructor(json, is_cake) {
         this.id = json.id; 
         this.name = json.name; 
-        this.quantity = json.quantity; 
+        if (is_cake) {
+            //this.quantity = json.
+        }
+        else {
+            this.quantity = json.quantity; 
+        }
         this.description = json.description; 
         this.price = json.price; 
     }
@@ -18,7 +23,9 @@ class CartItem {
 
         var $price_row = $("<div>", {class : "d-flex flex-row align-items-start"}); 
         var $price = this.price; 
-        var $price_text = $("<p>", { text : "$" + (this.price * this.quantity).toFixed(2) }); 
+        var $price_text; 
+        $price_text = $("<p>", {text : "$" + ($price * this.quantity).toFixed(2) }); 
+        //$price_text = $("<p>", {text : "$" + (cake_price(this.price, this.size) * this.quantity).toFixed(2)})
         $price_row.append($price_text); 
         var $quant_select = $("<select>"); 
         for (var i = 1; i <= 10; i++) {
@@ -29,6 +36,7 @@ class CartItem {
             update_cart($id, $(this).val()); 
             $price_text.text("$" + (parseFloat($price) * parseInt($(this).val(), 10)).toFixed(2)); 
         }); 
+        
         $price_row.append($quant_select); 
         $price_row.append($("<button>", {class : "btn", text : "Remove"}).click( function() {
             update_cart($id, 0); 
@@ -38,6 +46,10 @@ class CartItem {
 
         return $item;
     }
+}
+
+function cake_price(price_per_inch, size) {
+    return price_per_inch * size * size; 
 }
 
 function update_cart(item, quantity) {
@@ -57,6 +69,7 @@ $(function() {
         type : 'POST',
         data : { action : "items"},
         success : function(json) {
+            //alert(json); 
             if (!json) {
                 $("main").prepend($("<p>", {text : "Your cart is empty"})); 
                 $("#place-order").remove(); 
@@ -66,28 +79,25 @@ $(function() {
                 $("main").prepend($("<p>", {text : json})); 
                 return; 
             }
-            items = JSON.parse(json); 
-            if (items.length == 0) {
+            cart = JSON.parse(json); 
+            if (cart.items.length == 0 && cart.cakes.length == 0) {
                 $("main").prepend($("<p>", {text : "Your cart is empty"})); 
                 return;
             }
-            for (var i in items) {
-                var item = new CartItem(items[i]); 
+            for (var i in cart.items) {
+                var item = new CartItem(cart.items[i], false); 
                 $("#item-list").append(item.getHTML()); 
             }
+            for (var i in cart.cakes) {
+                var cake = new CartItem(cart.cakes[i], true); 
+            }
+            $("main").append($("<button>", {
+                id : "place-order", 
+                class : "ml-auto btn align-self-start btn-primary", 
+                text : "Place Order"
+            })); 
         }
     });
-    $("#logout").click( function() {
-        $.ajax({
-            url : '../php/cart.php',
-            type : 'POST',
-            data : { action : "logout"},
-            success : function() {
-                window.location.replace("../login/login.html");
-            }
-        }); 
-    });
-
     $("#place-order").click( function() {
         $.ajax({
             url : '../php/cart.php',

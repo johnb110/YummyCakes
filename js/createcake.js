@@ -9,7 +9,6 @@ class Option {
         $group.append($("<label>", {for : this.category, text : capitalize(this.category)})); 
         var $select = $("<select>", {class : "form-control", id : this.category});
         for (var i in this.options) {
-            //console.log(this.options[i]); 
             $select.append($("<option>", { value : this.options[i].id, html : this.options[i].value })); 
         }
         $group.append($select); 
@@ -33,15 +32,25 @@ $(function() {
                 return; 
             }
             options = JSON.parse(json); 
+            $form = $("#cake-form"); 
             for (key in options) {
                 var option = new Option(key, options[key]); 
-                $("#cake-form").append(option.getHTMLObject()); 
+                $form.append(option.getHTMLObject()); 
             }
-            $("#cake-form").append($("<button>", {class : "btn btn-primary", html : "Create Your Cake!"}));
+            var $select = $("<select>", {class : "form-control", id : "size"});
+            var sizes = [6, 8, 10, 12]; 
+            for (i in sizes) {
+                var size = sizes[i]; 
+                $select.append($("<option>", {value : size, text : size.toString() + "\""}));
+            }
+            $form.append($("<div>", {class : "form-group"}));
+            $form.append($("<label>", {for : "size", text : "Size"}));
+            $form.append($select); 
+            $form.append($("<button>", {class : "btn btn-primary", html : "Create Your Cake!"}));
         }
     });
     $("#cake-form").submit( function() {
-        alert("button pressed"); 
+        //alert("button pressed"); 
         var selections = {};
         $("select").each( function() {
             var category = $(this).attr('id');  

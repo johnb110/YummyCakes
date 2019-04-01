@@ -57,7 +57,8 @@ function submit_cake($link, $selections) {
     }
     $item_id = -1; 
     if (mysqli_num_rows($result) != 0) {
-        $cake_id = $result['cake'];
+        $row = mysqli_fetch_assoc($result); 
+        $cake_id = $row['cake'];
         $query = "SELECT dessert_item FROM dessert_item WHERE cake=$cake_id"; 
         $result = mysqli_query($link, $query); 
         if (!$result) {
@@ -65,7 +66,7 @@ function submit_cake($link, $selections) {
             exit(); 
         }
         $row = mysqli_fetch_assoc($result); 
-        $item_id = $row['dssert_item']; 
+        $item_id = $row['dessert_item']; 
     }
     else {
         $query = "SELECT create_new_cake($flavor, $frosting, $filling)";
@@ -77,13 +78,18 @@ function submit_cake($link, $selections) {
         $row = mysqli_fetch_array($result); 
         $item_id = $row[0];
     }
-    if (!isset($_SESSION['cart'])) {
-        $_SESSION['cart'] = array(); 
+    if (!isset($_SESSION['cakes'])) {
+        $_SESSION['cakes'] = array(); 
     }
-    if (!isset($_SESSION['cart'][$item_id])) {
-        $_SESSION['cart'][$item_id] = 0; 
+    if (!isset($_SESSION['cakes'][$item_id])) {
+        $_SESSION['cakes'][$item_id] = array(); 
     }
-    $_SESSION['cart'][$item_id] += 1; 
+    $size = $selections['size']; 
+    if (!isset($_SESSION['cakes'][$item_id][$size])) {
+        $_SESSION['cakes'][$item_id][$size] = 0; 
+    }
+    $_SESSION['cakes'][$item_id][$size] += 1; 
+    echo json_encode($_SESSION['cakes']); 
 }
 
 session_start(); 
@@ -107,12 +113,13 @@ switch ($_POST['action']) {
             echo "ERROR_NO_SELECTION";
             exit(); 
         }
-        $selections = json_decode($_POST['select']);
+        $selections = json_decode($_POST['select'], true);
         $link = db_connect(); 
         if (!$link) {
             echo "ERROR_DB_CONNECT"; 
             exit(); 
         }
+        submit_cake($link, $selections); 
         break; 
 }
 
