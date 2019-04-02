@@ -5,46 +5,94 @@ class CartItem {
         this.id = json.id; 
         this.name = json.name; 
         if (is_cake) {
-            //this.quantity = json.
+            this.sizes = json.sizes;
         }
         else {
             this.quantity = json.quantity; 
         }
         this.description = json.description; 
         this.price = json.price; 
+        this.is_cake = is_cake; 
     }
     getHTML() {
         var $id = this.id
-        var $item = $("<li>", {class : "list-group-item"});
+        var $item = $("<li>", {class : "list-group-item", id : $id.toString()});
         var $container = $("<div>", {class : "d-flex flex-column full-width"}); 
-        $container.append($("<p>", {text : this.name }));
+        $container.append($("<h5>", {text : this.name }));
         $container.append($("<p>", {text : this.description}));
         $item.append($container);
-
-        var $price_row = $("<div>", {class : "d-flex flex-row align-items-start"}); 
-        var $price = this.price; 
-        var $price_text; 
-        $price_text = $("<p>", {text : "$" + ($price * this.quantity).toFixed(2) }); 
-        //$price_text = $("<p>", {text : "$" + (cake_price(this.price, this.size) * this.quantity).toFixed(2)})
-        $price_row.append($price_text); 
-        var $quant_select = $("<select>"); 
-        for (var i = 1; i <= 10; i++) {
-            $quant_select.append($("<option>", {val : i, text : i.toString()})); 
+        if (this.is_cake) {
+            var sizes = this.sizes; 
+            var price_per_inch = this.price;  
+            Object.keys(sizes).forEach(function(size) {
+                var quantity = sizes[size]; 
+                var price = cake_price(price_per_inch, size); 
+                var $price_row = add_price_row($id, price, quantity, size); 
+                $container.append($price_row); 
+            });
         }
-        $quant_select.val(this.quantity); 
-        $quant_select.change(function() {
-            update_cart($id, $(this).val()); 
-            $price_text.text("$" + (parseFloat($price) * parseInt($(this).val(), 10)).toFixed(2)); 
-        }); 
-        
-        $price_row.append($quant_select); 
-        $price_row.append($("<button>", {class : "btn", text : "Remove"}).click( function() {
-            update_cart($id, 0); 
-            $item.remove(); 
-        })); 
-        $container.append($price_row);
+        else {
+            var $price_row = add_price_row(this.id, this.price, this.quantity); 
+            $container.append($price_row);
+        }
+        //$price_text = $("<p>", {text : "$" + (cake_price(this.price, this.size) * this.quantity).toFixed(2)})
 
         return $item;
+    }
+}
+
+function add_price_row(id, price, quantity, size=null) {
+    var $price_row = $("<div>", {class : "container d-flex mr-3 flex-row align-items-start"}); 
+    var $price_text = $("<label>", {class: "mr-3 form-control", text : "$" + (price * quantity).toFixed(2) });
+    $price_row.append($price_text); 
+    if (size) {
+        $price_row.append($("<label>", {class : "mr-3 form-control", text : "Size: " + size + "\""}));
+    }
+    var $quant_select = $("<select>", {class : "mr-3 form-control"}); 
+    for (var i = 1; i <= 10; i++) {
+        $quant_select.append($("<option>", {val : i, text : i.toString()})); 
+    }
+    $quant_select.val(quantity); 
+    if (size) {
+        $quant_select.change(function () {
+            update_cake(id, size, $(this).val()); 
+            $price_text.text("$" + (price * $(this).val()).toFixed(2)); 
+        }); 
+    }
+    else {
+        $quant_select.change(function() {
+            update_cart(id, $(this).val()); 
+            $price_text.text("$" + (price * $(this).val()).toFixed(2)); 
+        }); 
+    }
+    $price_row.append($quant_select);
+    if (size) {
+        $price_row.append($("<button>", {class : "btn", text : "Remove"}).click( function() {
+            update_cake(id, size, 0); 
+            $price_row.remove();
+            // TODO: check if there are any price rows left in item
+            $item = $("#"+id); 
+            if ($item.find("button").length == 0) {
+                $item.remove(); 
+                check_empty_cart(); 
+            }
+        }));
+    }
+    else {
+        $price_row.append($("<button>", {class : "btn", text : "Remove"}).click( function() {
+            update_cart(id, 0); 
+            $("#"+id).remove(); 
+            check_empty_cart(); 
+        })); 
+    }
+    
+    return $price_row; 
+}
+
+function check_empty_cart() {
+    if ($("#item-list").find("li").length == 0) {
+        $("main > div").find("button").remove(); 
+        $("main").prepend($("<p>", {text : "Your cart is empty"}));
     }
 }
 
@@ -52,13 +100,28 @@ function cake_price(price_per_inch, size) {
     return price_per_inch * size * size; 
 }
 
+function update_cake(cake, size, quantity) {
+    $.ajax({
+        url : '../php/cart.php',
+        type : 'POST',
+        data : {action : "update-cake", cake : cake, size : size, quantity : quantity},
+        success : function(result) {
+            if (result) {
+                alert(result); 
+            }
+        }
+    }); 
+}
+
 function update_cart(item, quantity) {
     $.ajax({
         url : '../php/cart.php',
         type : 'POST', 
         data : { action : "update-cart", item : item, quantity : quantity}, 
-        success : function () {
-
+        success : function (result) {
+            if (result) {
+                alert(result); 
+            }
         }
     });
 }
@@ -69,7 +132,6 @@ $(function() {
         type : 'POST',
         data : { action : "items"},
         success : function(json) {
-            //alert(json); 
             if (!json) {
                 $("main").prepend($("<p>", {text : "Your cart is empty"})); 
                 $("#place-order").remove(); 
@@ -90,27 +152,27 @@ $(function() {
             }
             for (var i in cart.cakes) {
                 var cake = new CartItem(cart.cakes[i], true); 
+                $("#item-list").append(cake.getHTML()); 
             }
-            $("main").append($("<button>", {
+            $("main > div").append($("<button>", {
                 id : "place-order", 
                 class : "ml-auto btn align-self-start btn-primary", 
                 text : "Place Order"
+            }).click(function () {
+                $.ajax({
+                    url : '../php/cart.php',
+                    type : 'POST', 
+                    data : {action : "order", total : 0.0},
+                    success : function(result) {
+                        if (result) {
+                            alert(result); 
+                        }
+                        else {
+                            window.location.replace("../home/home.html")
+                        }
+                    }
+                });
             })); 
         }
-    });
-    $("#place-order").click( function() {
-        $.ajax({
-            url : '../php/cart.php',
-            type : 'POST', 
-            data : {action : "order", total : 0.0},
-            success : function(result) {
-                if (result) {
-                    alert(result); 
-                }
-                else {
-                    window.location.replace("../home/home.html")
-                }
-            }
-        });
     });
 });

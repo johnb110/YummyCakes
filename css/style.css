@@ -57,6 +57,12 @@ button {
     margin : 0 auto; 
 }
 
-a:link {
-    color : white; 
+
+
+.cake-cart-list {
+    width : 100$; 
+}
+
+form {
+    background-color : whitesmoke; 
 }

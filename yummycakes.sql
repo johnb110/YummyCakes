@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 01, 2019 at 05:31 AM
+-- Generation Time: Apr 02, 2019 at 05:20 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -84,7 +84,8 @@ CREATE TABLE `cake` (
 --
 
 INSERT INTO `cake` (`cake`, `flavor`, `frosting`, `filling`, `preset`, `available`) VALUES
-(5, 61, 67, 73, 0, 1);
+(5, 61, 67, 73, 0, 1),
+(6, 61, 67, 72, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -149,7 +150,8 @@ INSERT INTO `dessert_item` (`dessert_item`, `name`, `image_file_name`, `descript
 (30, 'Sugar Cookies', 'frosted_sugar_cookies.jpg', 'Classic sugar cookies, with pink frosting and sprinkles (6)', '5.99', 1, NULL),
 (31, 'Snickerdoodles', 'snickerdoodles.jpg', 'Cookies baked with cinnamon and sugar (6)', '5.99', 1, NULL),
 (32, 'Chocolate Cupcakes', 'chocolate_cupcakes.jpg', 'Chocolate cupcakes with chocolate frosting (4)', '4.99', 1, NULL),
-(34, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 5);
+(34, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 5),
+(35, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: [None]', '0.32', 1, 6);
 
 -- --------------------------------------------------------
 
@@ -176,7 +178,10 @@ INSERT INTO `dessert_order` (`dessert_order`, `user`, `total_cost`, `placed`, `e
 (23, 'johnberlien@gmail.com', '0.00', '2019-03-24', '2019-03-31', 'yay!'),
 (24, 'johnberlien@gmail.com', '0.00', '2019-03-25', '2019-04-01', 'yay!'),
 (25, 'johnberlien@gmail.com', '0.00', '2019-03-27', '2019-04-03', 'yay!'),
-(26, 'johnberlien@gmail.com', '0.00', '2019-03-26', '2019-04-02', 'yay!');
+(26, 'johnberlien@gmail.com', '0.00', '2019-03-26', '2019-04-02', 'yay!'),
+(27, 'johnberlien@gmail.com', '0.00', '2019-04-01', '2019-04-08', 'yay!'),
+(28, 'johnberlien@gmail.com', '0.00', '2019-04-01', '2019-04-08', 'yay!'),
+(29, 'johnberlien@gmail.com', '0.00', '2019-04-01', '2019-04-08', 'yay!');
 
 -- --------------------------------------------------------
 
@@ -213,7 +218,11 @@ INSERT INTO `order_item` (`dessert_order`, `dessert_item`, `cake_size`, `cost`, 
 (25, 27, NULL, '0.00', 4),
 (26, 25, NULL, '0.00', 5),
 (26, 28, NULL, '0.00', 14),
-(26, 29, NULL, '0.00', 2);
+(26, 29, NULL, '0.00', 2),
+(27, 25, NULL, '0.00', 1),
+(27, 35, 6, '0.00', 1),
+(28, 35, 6, '0.00', 1),
+(29, 35, 6, '0.00', 1);
 
 -- --------------------------------------------------------
 
@@ -231,7 +240,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user`, `pass_word`) VALUES
-('admin', '7eb11832444ff396deb59f0b60daff4dbd841f434554cbbf803521939e6e547f'),
+('admin', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
 ('johnberlien@gmail.com', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b');
 
 --
@@ -288,7 +297,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cake`
 --
 ALTER TABLE `cake`
-  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `custom`
@@ -300,13 +309,13 @@ ALTER TABLE `custom`
 -- AUTO_INCREMENT for table `dessert_item`
 --
 ALTER TABLE `dessert_item`
-  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `dessert_order`
 --
 ALTER TABLE `dessert_order`
-  MODIFY `dessert_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `dessert_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Constraints for dumped tables

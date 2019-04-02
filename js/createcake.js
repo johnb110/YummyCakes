@@ -46,7 +46,7 @@ $(function() {
             $form.append($("<div>", {class : "form-group"}));
             $form.append($("<label>", {for : "size", text : "Size"}));
             $form.append($select); 
-            $form.append($("<button>", {class : "btn btn-primary", html : "Create Your Cake!"}));
+            $form.append($("<button>", {type : "submit", class : "form-row form-group btn btn-primary mr-3", html : "Create Your Cake!"}));
         }
     });
     $("#cake-form").submit( function() {

@@ -76,6 +76,18 @@ function update_cart($item, $quantity) {
     }
 }
 
+function update_cake($cake, $size, $quantity) {
+    if ($quantity == 0) {
+        unset($_SESSION['cakes'][$cake][$size]); 
+    }
+    else {
+        $_SESSION['cakes'][$cake][$size] = $quantity; 
+    }
+    if (count($_SESSION['cakes'][$cake]) == 0) {
+        unset($_SESSION['cakes'][$cake]); 
+    }
+}
+
 function place_order($link, $total) {
     $user = $_SESSION['user']; 
     $today = date("Y-m-d");
@@ -92,12 +104,24 @@ function place_order($link, $total) {
         exit(); 
     }
     $order_id = $row[0]; 
-    foreach ($_SESSION['cart'] as $id=>$quantity) {
-        $query = "INSERT INTO `order_item` (`dessert_order`,`dessert_item`,`cake_size`,`cost`,`quantity`) "; 
-        $query .= "VALUES ($order_id, $id, NULL, 0.0, $quantity)"; 
-        mysqli_query($link, $query); 
+    if (isset($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $id=>$quantity) {
+            $query = "INSERT INTO `order_item` (`dessert_order`,`dessert_item`,`cake_size`,`cost`,`quantity`) "; 
+            $query .= "VALUES ($order_id, $id, NULL, 0.0, $quantity)"; 
+            mysqli_query($link, $query); 
+        }
+        unset($_SESSION['cart']);
     }
-    unset($_SESSION['cart']); 
+    if (isset($_SESSION['cakes'])) {
+        foreach($_SESSION['cakes'] as $cake=>$sizes) {
+            foreach ($sizes as $size=>$quantity) {
+                $query = "INSERT INTO `order_item` (`dessert_order`, `dessert_item`,`cake_size`,`cost`,`quantity`) ";
+                $query.= "VALUES ($order_id, $cake, $size, 0.0, $quantity)"; 
+                mysqli_query($link, $query); 
+            }
+        }
+        unset($_SESSION['cakes']);
+    }
 }
 
 session_start(); 
@@ -126,6 +150,12 @@ switch ($_POST['action']) {
         $item = $_POST['item'];
         $quantity = $_POST['quantity'];
         update_cart($item, $quantity); 
+        break; 
+    case "update-cake":
+        $cake = $_POST['cake']; 
+        $size = $_POST['size']; 
+        $quantity = $_POST['quantity']; 
+        update_cake($cake, $size, $quantity); 
         break; 
     case "logout":
         session_destroy(); 

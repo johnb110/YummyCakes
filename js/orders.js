@@ -42,7 +42,11 @@ class OrderItem {
         var $item = $("<div>", { class : "d-flex flex-column" }); 
         $item.append($("<p>", {text : this.name })); 
         $item.append($("<p>", {text : this.description}));
+        if (this.cake_size) {
+            $item.append($("<p>", {text : this.cake_size + "\""}));
+        }
         $item.append($("<p>", {text : this.quantity}));
+        
         return $item; 
     }
 }
