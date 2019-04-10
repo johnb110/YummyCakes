@@ -4,7 +4,7 @@ class Option {
         this.options = options; 
     }
 
-    getHTMLObject() {
+    getHTML() {
         var $group = $("<div>", {class : "form-group"});
         $group.append($("<label>", {for : this.category, text : capitalize(this.category)})); 
         var $select = $("<select>", {class : "form-control", id : this.category});
@@ -16,12 +16,33 @@ class Option {
     }
 }
 
+class OptionAdmin {
+    constructor(category, options) {
+        this.category = category; 
+        this.options = options;
+    }
+
+    getHTML() {
+        var $group = $("<div>", { class : "form-group"}); 
+        $group.append($("<label>", {for : this.category, text : capitalize(this.category)}));
+        var $row = $("<div>", { class : "form-row" });
+        var $select = $("<select>", { class : "form-control", id : this.category});
+        for (var i in this.options) {
+            $select.append($("<option>", { value : this.options[i].id, html : this.options[i].value })); 
+        }
+        $row.append($select); 
+        $row.append($("<input>", {type : "checkbox", class : "form-check-input", id : "available-"+this.category})); 
+        $row.append($("<label>", {for : "avaialable-"+this.category, class : "form-check-label", html : "Available"}));
+        $group.append($row); 
+        return $group; 
+    }
+}
+
 function capitalize(word) {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 $(function() {
-
     $.ajax({
         url : '../php/createcake.php',
         type : 'POST', 
@@ -31,11 +52,19 @@ $(function() {
             if (!json) {
                 return; 
             }
-            options = JSON.parse(json); 
+            parsed = JSON.parse(json); 
+            var admin = parsed.admin; 
+            var options = parsed.options; 
             $form = $("#cake-form"); 
             for (key in options) {
-                var option = new Option(key, options[key]); 
-                $form.append(option.getHTMLObject()); 
+                var option; 
+                if (admin) {
+                    option = new OptionAdmin(key, options[key]);
+                }
+                else {
+                    option = new Option(key, options[key]);
+                }
+                $form.append(option.getHTML()); 
             }
             var $select = $("<select>", {class : "form-control", id : "size"});
             var sizes = [6, 8, 10, 12]; 
@@ -46,11 +75,10 @@ $(function() {
             $form.append($("<div>", {class : "form-group"}));
             $form.append($("<label>", {for : "size", text : "Size"}));
             $form.append($select); 
-            $form.append($("<button>", {type : "submit", class : "form-row form-group btn btn-primary mr-3", html : "Create Your Cake!"}));
+            $form.append($("<button>", {type : "submit", class : "form-row form-group btn btn-primary mt-3", html : "Create Your Cake!"}));
         }
     });
     $("#cake-form").submit( function() {
-        //alert("button pressed"); 
         var selections = {};
         $("select").each( function() {
             var category = $(this).attr('id');  

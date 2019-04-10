@@ -1,4 +1,3 @@
-
 <?php
 
 function db_connect() {
@@ -32,22 +31,21 @@ function add_to_cart($item, $quantity) {
     $_SESSION['cart'][$item] += $quantity; 
 }
 
-function get_items_admin($link) {
-    
-}
-
-function get_dessert_items($link) {
+function get_dessert_items($link, $page, $page_size) {
     // Only retrieve currently available 
-    $admin = ($_SESSION['user'] == "admin" ? 0 : 1); 
+    $is_admin = ($_SESSION['user'] == "admin" ? 0 : 1); 
+    $offset = ($page - 1) * $page_size; 
     $ret_val = array(
         "admin" => ($_SESSION['user'] == "admin")
     );
-    $query = "SELECT dessert_item as id, name, image_file_name as file, description, price, cake.cake as cake_id FROM 
-        dessert_item LEFT OUTER JOIN cake ON dessert_item.cake=cake.cake WHERE dessert_item.available=1 
-        OR dessert_item.available=$admin AND (cake.preset=1 OR cake.preset IS NULL)"; 
+    $query = "SELECT dessert_item as id, name, image_file_name as file, description, price, cake.cake as cake_id, dessert_item.available 
+        FROM dessert_item LEFT OUTER JOIN cake ON dessert_item.cake=cake.cake 
+        WHERE (dessert_item.available=1 OR dessert_item.available=$is_admin) AND (cake.preset=1 OR cake.preset IS NULL)
+        LIMIT $page_size OFFSET $offset"; 
     $result = mysqli_query($link, $query);
     if (!$result) {
         echo "ERROR_QUERY_FAILED"; 
+        echo mysqli_error($link); 
         return false; 
     }
     $items = array(); 
@@ -56,6 +54,54 @@ function get_dessert_items($link) {
     } 
     $ret_val['items'] = $items; 
     echo json_encode($ret_val); 
+}
+
+function update_item($link, $changes) {
+    $id = $changes["id"]; 
+    $name = mysqli_real_escape_string($link, trim($changes["name"]));
+    $file = mysqli_real_escape_string($link, trim($changes["file"]));
+    $desc = mysqli_real_escape_string($link, trim($changes["description"]));
+    $price = mysqli_real_escape_string($link, trim($changes["price"])); 
+    $available = mysqli_real_escape_string($link, trim($changes["available"])); 
+
+    $query = "UPDATE dessert_item 
+        SET name='$name', image_file_name='$file', description='$desc', price=$price, available=$available
+        WHERE dessert_item=$id;"; 
+
+    $result = mysqli_query($link, $query); 
+    if (!$result) {
+        echo "ERROR_QUERY_FAILED"; 
+        echo mysqli_error($link); 
+    }
+}
+
+function insert_item($link, $new_item) {
+    $name = mysqli_real_escape_string($link, trim($new_item["name"]));
+    $file = mysqli_real_escape_string($link, trim($new_item["image_file_name"]));
+    $desc = mysqli_real_escape_string($link, trim($new_item["description"]));
+    $price = mysqli_real_escape_string($link, trim($new_item["price"]));
+
+    $query = "SELECT insert_new_item ('$name', '$file', '$desc', $price);"; 
+    
+    $result = mysqli_query($link, $query); 
+    if (!$result) {
+        echo "ERROR_QUERY_FAILED";
+        echo mysqli_error($link); 
+        exit();
+    }
+    $row = mysqli_fetch_array($result); 
+    $id = $row[0]; 
+
+    $query = "SELECT dessert_item as id, name, image_file_name as file, description, price, dessert_item.available, cake
+        FROM dessert_item WHERE dessert_item=$id;"; 
+    $result = mysqli_query($link, $query); 
+    if (!$result) {
+        echo "ERROR_QUERY_FAILED";
+        echo mysqli_error($link); 
+        exit(); 
+    }
+    $added_item = mysqli_fetch_assoc($result); 
+    echo json_encode($added_item); 
 }
 
 session_start(); 
@@ -77,7 +123,9 @@ switch ($_POST['action']) {
             echo "ERROR_DB_CONNECT_FAILED"; 
             exit(); 
         }
-        get_dessert_items($link); 
+        $page = $_POST['page'];
+        $page_size = $_POST['page_size'];
+        get_dessert_items($link, $page, $page_size); 
         mysqli_close($link); 
         break; 
     case "add-cart":
@@ -87,9 +135,34 @@ switch ($_POST['action']) {
         }
         add_to_cart($_POST['item'], $_POST['quantity']); 
         break; 
-    case "upload": 
-        echo $_FILES['imageFileUpload']; 
-        break;
+    case "update":
+        if ($_SESSION['user'] != "admin") {
+            echo "ERROR_PRIVELEGES"; 
+            exit(); 
+        }
+        $link = db_connect(); 
+        if (!$link) {
+            echo "ERROR_DB_CONNECT"; 
+            exit(); 
+        }
+        $changes = json_decode($_POST['changes'], true); 
+        update_item($link, $changes); 
+        mysqli_close($link); 
+        break; 
+    case "insert":
+        if ($_SESSION['user'] != "admin") {
+            echo "ERROR_PRIVELEGES";
+            exit();
+        }
+        $link = db_connect();
+        if (!$link) {
+            echo "ERROR_DB_CONNECT";
+            exit();
+        }
+        $new_item = json_decode($_POST['item'], true);
+        insert_item($link, $new_item); 
+        mysqli_close($link); 
+        break; 
     case "logout":
         session_destroy(); 
         break;

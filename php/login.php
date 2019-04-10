@@ -80,30 +80,6 @@ if ($_POST['action'] == "login") {
     $_SESSION['user'] = $email; 
 }
 else if ($_POST['action'] == "register") {
-    /*
-    $stmt = mysqli_stmt_init($link); 
-    if (!mysqli_stmt_prepare($stmt, "CALL user_exists(?)")) {
-        echo "ERROR_STMT"; 
-        exit();  
-    } 
-    mysqli_stmt_bind_param($stmt, "s", $email);
-    mysqli_stmt_execute($stmt); 
-    mysqli_stmt_bind_result($stmt, $user_exists); 
-    mysqli_stmt_fetch($stmt); 
-    mysqli_stmt_close($stmt); 
-    if ($user_exists == true) {
-        echo "ERROR_USER_EXISTS"; 
-        exit(); 
-    }
-    if (!mysqli_stmt_prepare($stmt, "CALL add_new_user(?, ?))")) {
-        echo "ERROR_STMT"; 
-        exit(); 
-    }
-    mysqli_stmt_bind_param($stmt, "ss", $email, $password);
-    mysqli_stmt_execute($stmt); 
-    mysqli_stmt_close($stmt);
-    echo "SUCCESS"; 
-    */
     if (!check_user_exists($email, $link)) {
         $hashed = hash("sha256", $password); 
         $query = "CALL add_new_user('".$email."','".$hashed."')";
@@ -117,7 +93,5 @@ else if ($_POST['action'] == "register") {
 }
 
 mysqli_close($link);
-
-//echo $_POST['email']." ".$_POST['password']; 
 
 ?>

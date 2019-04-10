@@ -10,3 +10,5 @@ chocolate_chip_cookies.jpg: https://www.handletheheat.com/bakery-style-chocolate
 peanut_butter_cookies.jpg: https://www.landolakes.com/recipe/17171/classic-peanut-butter-cookies/
 frosted_sugar_cookies.jpg: https://www.cookingclassy.com/perfect-frosted-sugar-cookies/
 snickerdoodles.jpg: https://cookiesandcups.com/perfect-snickerdoodles/
+brownies.jpg: https://bakingamoment.com/simply-perfect-brownies-from-scratch/
+cheesecake_bites.jpg: https://www.berries.com/product/9-Chocolate-Covered-Strawberry-Cheesecake-Bites-30176527?sk=&ref=SSSorganicgglunkwn&prid=sbseogu&productGroup=SHM&viewpos=15&ratings=4.6557&reviews=61&trackingpgroup=SHM

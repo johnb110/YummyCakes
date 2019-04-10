@@ -42,7 +42,13 @@ function get_options($link) {
         array_push($options[$row['category']], $value_id); 
     }
 
-    echo json_encode($options); 
+    $is_admin = $_SESSION['user'] == "admin"; 
+    $response = array(
+        "options" => $options,
+        "admin" => $is_admin
+    ); 
+
+    echo json_encode($response); 
 }
 
 function submit_cake($link, $selections) {

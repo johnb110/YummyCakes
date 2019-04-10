@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2019 at 05:20 AM
+-- Generation Time: Apr 10, 2019 at 04:58 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -44,6 +44,13 @@ BEGIN
     SET @desc = CONCAT('Flavor: ',@flv_name,', Frosting: ',@fst_name,', Filling: ',@fll_name);
     INSERT INTO `dessert_item` (`name`, `description`, `price`, `available`, `cake`) 
         VALUES ('Custom Cake', @desc, 0.32, 1, @cake_id); 
+    RETURN LAST_INSERT_ID();
+END$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `insert_new_item` (`name` VARCHAR(100), `image_file_name` VARCHAR(250), `description` VARCHAR(500), `price` DECIMAL(10,2)) RETURNS INT(11) NO SQL
+BEGIN
+    INSERT INTO dessert_item (`name`, `image_file_name`, `description`, `price`, `available`) 
+        VALUES (name, image_file_name, description, price, 1); 
     RETURN LAST_INSERT_ID();
 END$$
 
@@ -143,7 +150,7 @@ CREATE TABLE `dessert_item` (
 
 INSERT INTO `dessert_item` (`dessert_item`, `name`, `image_file_name`, `description`, `price`, `available`, `cake`) VALUES
 (25, 'Chocolate-Dipped Pretzels', 'chocolate_dipped_pretzel_rods.jpg', 'Pretzels dipped in chocolate and sprinkles (6)', '2.99', 1, NULL),
-(26, 'Rice Krispie Treat', 'White-Chocolate-Krispie-Treats-Image.JPG', 'Traditional Rice Krispie Treat dipped in white chocolate', '0.99', 1, NULL),
+(26, 'Rice Krispie Treat', 'White-Chocolate-Krispie-Treats-Image.JPG', 'Traditional Rice Krispie Treat dipped in white chocolate (5)', '0.99', 1, NULL),
 (27, 'Cake Balls', 'cake_balls.jpg', 'Assorted cake balls (6)', '2.99', 1, NULL),
 (28, 'Chocolate Chip Cookies', 'chocolate_chip_cookies.jpg', 'Traditional chocolate chip cookies, like mom used to make (6)', '5.99', 1, NULL),
 (29, 'Peanut Butter Cookies', 'peanut_butter_cookies.jpg', 'Peanut butter-flavored cookies (6)', '5.99', 1, NULL),
@@ -151,7 +158,9 @@ INSERT INTO `dessert_item` (`dessert_item`, `name`, `image_file_name`, `descript
 (31, 'Snickerdoodles', 'snickerdoodles.jpg', 'Cookies baked with cinnamon and sugar (6)', '5.99', 1, NULL),
 (32, 'Chocolate Cupcakes', 'chocolate_cupcakes.jpg', 'Chocolate cupcakes with chocolate frosting (4)', '4.99', 1, NULL),
 (34, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 5),
-(35, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: [None]', '0.32', 1, 6);
+(35, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: [None]', '0.32', 1, 6),
+(41, 'Brownies', 'brownies.jpg', 'Yummy brownies! (6)', '12.99', 1, NULL),
+(44, 'Cheesecake Bites', 'cheesecake_bites.jpg', 'Chocolate-covered strawberry cheesecake bites (10)', '19.99', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -309,7 +318,7 @@ ALTER TABLE `custom`
 -- AUTO_INCREMENT for table `dessert_item`
 --
 ALTER TABLE `dessert_item`
-  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `dessert_order`
