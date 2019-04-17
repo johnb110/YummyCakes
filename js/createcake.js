@@ -25,14 +25,17 @@ class OptionAdmin {
     getHTML() {
         var $group = $("<div>", { class : "form-group"}); 
         $group.append($("<label>", {for : this.category, text : capitalize(this.category)}));
-        var $row = $("<div>", { class : "form-row" });
-        var $select = $("<select>", { class : "form-control", id : this.category});
+        var $row = $("<div>", { class : "form-group row" });
+        var $select = $("<select>", { class : "form-control col-sm-5", id : this.category});
         for (var i in this.options) {
             $select.append($("<option>", { value : this.options[i].id, html : this.options[i].value })); 
         }
         $row.append($select); 
-        $row.append($("<input>", {type : "checkbox", class : "form-check-input", id : "available-"+this.category})); 
-        $row.append($("<label>", {for : "avaialable-"+this.category, class : "form-check-label", html : "Available"}));
+        var $avail = $("<div>", {class : "form-check"}); 
+
+        $avail.append($("<input>", {type : "checkbox", class : "form-check-input", id : "available-"+this.category})); 
+        $avail.append($("<label>", {for : "avaialable-"+this.category, class : "form-check-label ", html : "Available"}));
+        $row.append($avail); 
         $group.append($row); 
         return $group; 
     }
@@ -72,9 +75,10 @@ $(function() {
                 var size = sizes[i]; 
                 $select.append($("<option>", {value : size, text : size.toString() + "\""}));
             }
-            $form.append($("<div>", {class : "form-group"}));
-            $form.append($("<label>", {for : "size", text : "Size"}));
-            $form.append($select); 
+            $row = $("<div>", {class : "form-group col-sm-5"}); 
+            $row.append($("<label>", {for : "size", text : "Size"}));
+            $row.append($select); 
+            $form.append($row); 
             $form.append($("<button>", {type : "submit", class : "form-row form-group btn btn-primary mt-3", html : "Create Your Cake!"}));
         }
     });
