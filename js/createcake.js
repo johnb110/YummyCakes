@@ -23,20 +23,39 @@ class OptionAdmin {
     }
 
     getHTML() {
+        var options = this.options; 
         var $group = $("<div>", { class : "form-group"}); 
         $group.append($("<label>", {for : this.category, text : capitalize(this.category)}));
-        var $row = $("<div>", { class : "form-group row" });
-        var $select = $("<select>", { class : "form-control col-sm-5", id : this.category});
-        for (var i in this.options) {
-            $select.append($("<option>", { value : this.options[i].id, html : this.options[i].value })); 
+        var $row = $("<div>", { class : "row" });
+        var $sel_div = $("<div>", {class : "col-md-10"}); 
+        var $select = $("<select>", { class : "form-control", id : this.category});
+        for (var id in this.options) {
+            $select.append($("<option>", { value : id, html : this.options[id].value })); 
         }
-        $row.append($select); 
-        var $avail = $("<div>", {class : "form-check"}); 
+        
+        $sel_div.append($select); 
+        $row.append($sel_div); 
+        var $avail = $("<div>", {class : "form-check col"}); 
 
-        $avail.append($("<input>", {type : "checkbox", class : "form-check-input", id : "available-"+this.category})); 
-        $avail.append($("<label>", {for : "avaialable-"+this.category, class : "form-check-label ", html : "Available"}));
+        var $check = $("<input>", {type : "checkbox", class : "form-check-input", id : "available-"+this.category}); 
+        $avail.append($check); 
+        $avail.append($("<label>", {for : "available-"+this.category, class : "form-check-label ", html : "Available"}));
         $row.append($avail); 
         $group.append($row); 
+
+        $select.change(function() {
+            var id = $(this).val(); 
+            var checked = options[id].available == 1; 
+            $check.prop('checked', checked); 
+        }); 
+        $select.change(); 
+
+        var $new_row = $("<div>", {class : "row"}); 
+        var $new_input = $("<input>", {class : "form-control"}); 
+
+        $new_row.append($new_input); 
+
+        $group.append($new_row); 
         return $group; 
     }
 }

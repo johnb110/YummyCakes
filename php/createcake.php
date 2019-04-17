@@ -22,7 +22,12 @@ function db_connect() {
 }
 
 function get_options($link) {
-    $query = "SELECT * FROM custom WHERE available=1"; 
+    $is_admin = $_SESSION['user'] == "admin"; 
+
+    $query = "SELECT * FROM custom"; 
+    if (!$is_admin) {
+        $query .= " WHERE available=1"; 
+    }
     $result = mysqli_query($link, $query); 
     if (!$result) {
         echo "ERROR_QUERY_FAILED"; 
@@ -36,13 +41,14 @@ function get_options($link) {
             $options[$row['category']] = array(); 
         }
         $value_id = array(
-            "id"=>$row['custom'],
-            "value"=>$row['value']
+            "value"=>$row['value'],
+            "available"=>$row['available']
         );
-        array_push($options[$row['category']], $value_id); 
+        $options[$row['category']][$row['custom']] = $value_id; 
+        //array_push($options[$row['category']], $value_id); 
     }
 
-    $is_admin = $_SESSION['user'] == "admin"; 
+    
     $response = array(
         "options" => $options,
         "admin" => $is_admin
