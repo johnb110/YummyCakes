@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 17, 2019 at 10:23 PM
+-- Generation Time: Apr 18, 2019 at 04:41 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -33,10 +33,17 @@ END$$
 --
 -- Functions
 --
-CREATE DEFINER=`root`@`localhost` FUNCTION `create_new_cake` (`flavor` INT, `frosting` INT, `filling` INT) RETURNS INT(11) NO SQL
+CREATE DEFINER=`root`@`localhost` FUNCTION `add_new_custom` (`category` VARCHAR(100), `value` VARCHAR(100)) RETURNS INT(11) NO SQL
+BEGIN
+	INSERT INTO `custom` (`category`, `value`, `available`) 
+    VALUES (category, value, 1); 
+    RETURN LAST_INSERT_ID();
+END$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `create_new_cake` (`flavor` INT, `frosting` INT, `filling` INT, `preset` TINYINT(1)) RETURNS INT(11) NO SQL
 BEGIN
     INSERT INTO `cake` (`flavor`, `frosting`, `filling`, `preset`, `available`) 
-        VALUES (flavor, frosting, filling, 0, 1); 
+        VALUES (flavor, frosting, filling, preset, 1); 
     SELECT LAST_INSERT_ID() INTO @cake_id; 
     SELECT value INTO @flv_name FROM custom WHERE `custom`=flavor;
     SELECT value INTO @fst_name FROM `custom` WHERE `custom`=frosting;
@@ -92,7 +99,8 @@ CREATE TABLE `cake` (
 
 INSERT INTO `cake` (`cake`, `flavor`, `frosting`, `filling`, `preset`, `available`) VALUES
 (5, 61, 67, 73, 0, 1),
-(6, 61, 67, 72, 0, 1);
+(6, 61, 67, 72, 0, 1),
+(7, 63, 67, 73, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -126,7 +134,13 @@ INSERT INTO `custom` (`custom`, `category`, `value`, `available`) VALUES
 (72, 'filling', '[None]', 1),
 (73, 'filling', 'Chocolate Pudding', 1),
 (74, 'filling', 'Fruit', 1),
-(75, 'filling', 'Marshmallow Cream', 1);
+(75, 'filling', 'Marshmallow Cream', 1),
+(76, 'frosting', 'Cinammon', 1),
+(77, 'frosting', 'Coffee', 1),
+(78, 'frosting', 'Lemon', 1),
+(79, 'frosting', 'Blueberry', 1),
+(80, 'flavor', 'Lemon', 1),
+(81, 'flavor', 'Marble', 1);
 
 -- --------------------------------------------------------
 
@@ -160,7 +174,8 @@ INSERT INTO `dessert_item` (`dessert_item`, `name`, `image_file_name`, `descript
 (34, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 5),
 (35, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: [None]', '0.32', 1, 6),
 (41, 'Brownies', 'brownies.jpg', 'Yummy brownies! (6)', '12.99', 1, NULL),
-(44, 'Cheesecake Bites', 'cheesecake_bites.jpg', 'Chocolate-covered strawberry cheesecake bites (10)', '19.99', 1, NULL);
+(44, 'Cheesecake Bites', 'cheesecake_bites.jpg', 'Chocolate-covered strawberry cheesecake bites (10)', '19.99', 1, NULL),
+(45, 'Custom Cake', NULL, 'Flavor: Butter, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 7);
 
 -- --------------------------------------------------------
 
@@ -306,19 +321,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cake`
 --
 ALTER TABLE `cake`
-  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `custom`
 --
 ALTER TABLE `custom`
-  MODIFY `custom` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `custom` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT for table `dessert_item`
 --
 ALTER TABLE `dessert_item`
-  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `dessert_order`
