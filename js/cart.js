@@ -134,7 +134,7 @@ $(function() {
         success : function(json) {
             if (!json) {
                 $("main").prepend($("<p>", {text : "Your cart is empty"})); 
-                $("#place-order").remove(); 
+                $("#order-form").remove(); 
                 return; 
             }
             else if (typeof(json) == "string" && json.indexOf("ERROR") != -1) {
@@ -154,11 +154,7 @@ $(function() {
                 var cake = new CartItem(cart.cakes[i], true); 
                 $("#item-list").append(cake.getHTML()); 
             }
-            $("main > div").append($("<button>", {
-                id : "place-order", 
-                class : "ml-auto btn align-self-start btn-primary", 
-                text : "Place Order"
-            }).click(function () {
+            $("order-form").submit(function () {
                 $.ajax({
                     url : '../php/cart.php',
                     type : 'POST', 
@@ -172,7 +168,7 @@ $(function() {
                         }
                     }
                 });
-            })); 
+            });
         }
     });
 });

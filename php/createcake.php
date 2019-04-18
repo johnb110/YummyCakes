@@ -71,20 +71,35 @@ function submit_cake($link, $selections) {
     if (mysqli_num_rows($result) != 0) {
         $row = mysqli_fetch_assoc($result); 
         $cake_id = $row['cake'];
-        $query = "SELECT dessert_item FROM dessert_item WHERE cake=$cake_id"; 
-        $result = mysqli_query($link, $query); 
-        if (!$result) {
-            echo "ERROR_QUERY_FAILED"; 
-            exit(); 
+        if ($_SESSION['user'] == "admin") {
+            $query = "UPDATE cake SET preset=1 WHERE cake=$cake_id"; 
+            $result = mysqli_query($link, $query); 
+            if (!$result) {
+                echo "ERROR_QUERY_FAILED: ";
+                echo mysqli_error($link); 
+                exit(); 
+            }
+        } else {
+            $query = "SELECT dessert_item FROM dessert_item WHERE cake=$cake_id"; 
+            $result = mysqli_query($link, $query); 
+            if (!$result) {
+                echo "ERROR_QUERY_FAILED"; 
+                exit(); 
+            }
+            $row = mysqli_fetch_assoc($result); 
+            $item_id = $row['dessert_item']; 
         }
-        $row = mysqli_fetch_assoc($result); 
-        $item_id = $row['dessert_item']; 
     }
     else {
-        $query = "SELECT create_new_cake($flavor, $frosting, $filling)";
+        $preset = $_SESSION['user'] == "admin" ? 1 : 0; 
+        $query = "SELECT create_new_cake($flavor, $frosting, $filling, $preset)";
         $result = mysqli_query($link, $query); 
         if (!$result) {
-            echo "ERROR_QUERY_FAILED"; 
+            echo "ERROR_QUERY_FAILED: "; 
+            echo mysqli_error($link);
+            exit(); 
+        }
+        if ($_SESSION['user'] == "admin") {
             exit(); 
         }
         $row = mysqli_fetch_array($result); 
@@ -102,6 +117,28 @@ function submit_cake($link, $selections) {
     }
     $_SESSION['cakes'][$item_id][$size] += 1; 
     echo json_encode($_SESSION['cakes']); 
+}
+
+function add_new_custom($link, $category, $new_custom) {
+    $query = "SELECT add_new_custom('$category', '$new_custom');"; 
+    $result = mysqli_query($link, $query); 
+    if (!$result) {
+        echo "ERROR_QUERY_FAILED"; 
+        exit(); 
+    }
+    $row = mysqli_fetch_array($result); 
+    $new_id = $row[0]; 
+    echo $new_id; 
+}
+
+function update_available($link, $id, $available) {
+    $query = "UPDATE custom SET available=$available WHERE custom=$id"; 
+    $result = mysqli_query($link, $query); 
+    if (!$result) {
+        echo "ERROR_QUERY_FAILED"; 
+        echo mysqli_error($link); 
+        exit(); 
+    }
 }
 
 session_start(); 
@@ -133,6 +170,26 @@ switch ($_POST['action']) {
         }
         submit_cake($link, $selections); 
         break; 
+    case "add":
+        $link = db_connect(); 
+        if (!$link) {
+            echo "ERROR_DB_CONNECT"; 
+            exit(); 
+        }
+        $category = mysqli_real_escape_string($link, trim($_POST['category']));
+        $new_custom = mysqli_real_escape_string($link, trim($_POST['new_custom']));
+        add_new_custom($link, $category, $new_custom); 
+        break; 
+    case "set_available":
+        $link = db_connect(); 
+        if (!$link) {
+            echo "ERROR_DB_CONNECT";
+            exit(); 
+        }
+        $id = $_POST['id']; 
+        $available = $_POST['available']; 
+        update_available($link, $id, $available); 
+        break;
 }
 
 ?>

@@ -24,10 +24,11 @@ class OptionAdmin {
 
     getHTML() {
         var options = this.options; 
+        var category = this.category; 
         var $group = $("<div>", { class : "form-group"}); 
         $group.append($("<label>", {for : this.category, text : capitalize(this.category)}));
         var $row = $("<div>", { class : "row" });
-        var $sel_div = $("<div>", {class : "col-md-10"}); 
+        var $sel_div = $("<div>", {class : "col-md-8"}); 
         var $select = $("<select>", { class : "form-control", id : this.category});
         for (var id in this.options) {
             $select.append($("<option>", { value : id, html : this.options[id].value })); 
@@ -36,10 +37,25 @@ class OptionAdmin {
         $sel_div.append($select); 
         $row.append($sel_div); 
         var $avail = $("<div>", {class : "form-check col"}); 
-
         var $check = $("<input>", {type : "checkbox", class : "form-check-input", id : "available-"+this.category}); 
         $avail.append($check); 
-        $avail.append($("<label>", {for : "available-"+this.category, class : "form-check-label ", html : "Available"}));
+        $avail.append($("<label>", {for : "available-"+this.category, class : "form-check-label", html : "Available"}));
+        $check.click(function() {
+            var id  = $select.val(); 
+            var available = $(this).prop('checked') ? 1 : 0; 
+            console.log(available); 
+            $.ajax({
+                url : '../php/createcake.php',
+                type : 'POST',
+                data : {action : "set_available", id : id, available : available},
+                success : function(response) {
+                    if (response) {
+                        console.log(response); 
+                    }
+                    options[id].available = available; 
+                }
+            }); 
+        }); 
         $row.append($avail); 
         $group.append($row); 
 
@@ -50,11 +66,36 @@ class OptionAdmin {
         }); 
         $select.change(); 
 
-        var $new_row = $("<div>", {class : "row"}); 
-        var $new_input = $("<input>", {class : "form-control"}); 
-
+        var $new_row = $("<div>", {class : "row m-1"}); 
+        var $new_input = $("<input>", {class : "form-control col-md-8", placeholder : "Add new " + this.category + " here"}); 
+        var $new_button = $("<button>", {class : "btn btn-primary", text : "Add new!", type : "button"}); 
+        $new_button.click(function() { 
+            var new_custom = $new_input.val(); 
+            if (!new_custom) {
+                // Empty field
+                return; 
+            }
+            $.ajax({
+                url : '../php/createcake.php',
+                type : 'POST',
+                data : {action : "add", category : category, new_custom : new_custom }, 
+                success : function(response) {
+                    if (!response) {
+                        return; 
+                    }
+                    if (response.indexOf("ERROR") != -1) {
+                        console.log(response); 
+                        return;
+                    }
+                    $select.append($("<option>", { value : response, html : new_custom })); 
+                    $new_input.val(''); 
+                    var pair = {"value" : new_custom, "available" : 1}; 
+                    options[response] = pair; 
+                }
+            }); 
+        }); 
         $new_row.append($new_input); 
-
+        $new_row.append($new_button); 
         $group.append($new_row); 
         return $group; 
     }
@@ -65,6 +106,7 @@ function capitalize(word) {
 }
 
 $(function() {
+    var admin;
     $.ajax({
         url : '../php/createcake.php',
         type : 'POST', 
@@ -75,7 +117,7 @@ $(function() {
                 return; 
             }
             parsed = JSON.parse(json); 
-            var admin = parsed.admin; 
+            admin = parsed.admin; 
             var options = parsed.options; 
             $form = $("#cake-form"); 
             for (key in options) {
@@ -94,10 +136,12 @@ $(function() {
                 var size = sizes[i]; 
                 $select.append($("<option>", {value : size, text : size.toString() + "\""}));
             }
-            $row = $("<div>", {class : "form-group col-sm-5"}); 
-            $row.append($("<label>", {for : "size", text : "Size"}));
-            $row.append($select); 
-            $form.append($row); 
+            if (!admin) {
+                var $row = $("<div>", {class : "form-group col-sm-8"}); 
+                $row.append($("<label>", {for : "size", text : "Size"}));
+                $row.append($select); 
+                $form.append($row);
+            }
             $form.append($("<button>", {type : "submit", class : "form-row form-group btn btn-primary mt-3", html : "Create Your Cake!"}));
         }
     });
@@ -105,7 +149,7 @@ $(function() {
         var selections = {};
         $("select").each( function() {
             var category = $(this).attr('id');  
-            var id = $(this).children("option:selected").val();
+            var id = $(this).val();
             selections[category] = id; 
         });
         $.ajax({
