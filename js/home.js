@@ -159,14 +159,24 @@ function upload_image(form_data, $img, file_name) {
     });
 }
 
-function get_items(page, page_size) {
-    $("#item-list").empty(); 
+function get_items() {
+    var page = $("#page").text(); 
+    var page_size = $("#page-size").val(); 
+    var search = $("#search-text").val();
+    var category = $("#category").val(); 
+    if (!search) {
+        search = ""; 
+    }
+    if (!category) {
+        category = "none"; 
+    }
+    
     $.ajax({
         url : '../php/home.php',
         type : 'POST',
-        data : { action : "items", page : page, page_size : page_size},
+        data : { action : "items", page : page, page_size : page_size, search : search, category : category},
         success : function(json) {
-            //console.log(json); 
+            console.log(json); 
             if (!json) {
                 return; 
             }
@@ -175,8 +185,15 @@ function get_items(page, page_size) {
                 return; 
             }
             var ret_val = JSON.parse(json); 
+            $("#item-list").empty();
             var items = ret_val.items; 
             var admin = ret_val.admin;  
+            var pages = ret_val.pages; 
+
+            $("#pages").text(pages); 
+            $("#prev-page").prop('disabled', (page == 1));
+            $("#next-page").prop('disabled', (page == pages));
+
             for (var i in items) {
                 var item; 
                 if (admin) {
@@ -192,8 +209,10 @@ function get_items(page, page_size) {
                 $form.remove();  
             }
             else { 
-                $form.prop("hidden", false);  
-                add_handlers_to_form($form); 
+                if ($form.prop("hidden")) {
+                    $form.prop("hidden", false);  
+                    add_handlers_to_form($form); 
+                } 
             }
         }
     });
@@ -221,7 +240,7 @@ function add_handlers_to_form($form) {
             price : parseFloat($price.val()).toFixed(2),
             image_file_name : get_file_name($img.attr('src'))
         };
-        console.log(JSON.stringify($new_item)); 
+        //console.log(JSON.stringify($new_item)); 
         $.ajax({
             url : '../php/home.php',
             method : 'POST',
@@ -231,7 +250,7 @@ function add_handlers_to_form($form) {
                 if (!response) {
                     return; 
                 }
-                else if (typeof(respnose) == "string" && response.indexOf("ERROR") != -1) {
+                else if (typeof(response) == "string" && response.indexOf("ERROR") != -1) {
                     $("main").prepend($("<p>", {text : response})); 
                     return; 
                 }
@@ -244,17 +263,49 @@ function add_handlers_to_form($form) {
 
 function switch_page(move_to) {
     page = parseInt($("#page").html()) + move_to; 
-    page_size = $("#page-size").val(); 
-    get_items(page, page_size); 
+    pages = parseInt($("#pages").html()); 
     $("#page").text(page); 
+    get_items(); 
     $("#prev-page").prop('disabled', (page == 1)); 
+    $("#next-page").prop('disabled', (page == pages)); 
 }
 
-$(function() {
-    get_items(1, 5); 
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+function get_categories() {
+    $.ajax({
+        url : '../php/home.php',
+        method : 'POST',
+        data : {action: 'categories' },
+        success : function(json) {
+            console.log(json); 
+            if (!json) {
+                return;
+            }
+            else if (typeof(json) == "string" && json.indexOf("ERROR") != -1) {
+                $("main").prepend($("<p>", {text : json})); 
+                return; 
+            }
+            categories = JSON.parse(json); 
+            $category = $("#category"); 
+            for (i in categories) {
+                $category.append($("<option>", {val : categories[i], html : capitalize(categories[i]) })); 
+            }
+        }
+    }); 
+}
+
+$( function() {
+    get_categories(); 
+    get_items(); 
+    $("#category").change(function() {
+        get_items(); 
+    }); 
     $("#page-size").change(function() {
-        page_size = $(this).val(); 
-        get_items(1, page_size); 
+        $("#page").text(1); 
+        get_items(); 
     }); 
     $("#prev-page").click(function() {
         switch_page(-1);
@@ -262,5 +313,8 @@ $(function() {
     $("#next-page").click(function() {
         switch_page(1); 
     });
-    
+    $("#search").submit(function() {
+        get_items(); 
+        return false; 
+    }); 
 });

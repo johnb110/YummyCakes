@@ -37,11 +37,8 @@ main {
     max-height : 80%; 
 }
 
-form {
-    padding : 20px; 
+.use-bg-img {
     background-image : url("../images/bg1.jpg");
-    backdrop-filter : blur(8px); 
-    -webkit-backdrop-filter : blur(8px); 
 }
 
 .inside-form {
@@ -61,6 +58,3 @@ button {
     width : 100$; 
 }
 
-form {
-    background-color : whitesmoke; 
-}

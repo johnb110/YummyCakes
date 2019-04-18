@@ -43,7 +43,7 @@ class CartItem {
 
 function add_price_row(id, price, quantity, size=null) {
     var $price_row = $("<div>", {class : "container d-flex mr-3 flex-row align-items-start"}); 
-    var $price_text = $("<label>", {class: "mr-3 form-control", text : "$" + (price * quantity).toFixed(2) });
+    var $price_text = $("<label>", {id : "price", class: "mr-3 form-control", text : "$" + (price * quantity).toFixed(2) });
     $price_row.append($price_text); 
     if (size) {
         $price_row.append($("<label>", {class : "mr-3 form-control", text : "Size: " + size + "\""}));
@@ -91,9 +91,11 @@ function add_price_row(id, price, quantity, size=null) {
 
 function check_empty_cart() {
     if ($("#item-list").find("li").length == 0) {
-        $("main > div").find("button").remove(); 
-        $("main").prepend($("<p>", {text : "Your cart is empty"}));
+        $("#order-form").remove(); 
+        $("main").prepend($("<p>", {text : "Your cart is empty! Go add some treats!"}));
+        return true; 
     }
+    return false; 
 }
 
 function cake_price(price_per_inch, size) {
@@ -142,10 +144,6 @@ $(function() {
                 return; 
             }
             cart = JSON.parse(json); 
-            if (cart.items.length == 0 && cart.cakes.length == 0) {
-                $("main").prepend($("<p>", {text : "Your cart is empty"})); 
-                return;
-            }
             for (var i in cart.items) {
                 var item = new CartItem(cart.items[i], false); 
                 $("#item-list").append(item.getHTML()); 
@@ -154,11 +152,28 @@ $(function() {
                 var cake = new CartItem(cart.cakes[i], true); 
                 $("#item-list").append(cake.getHTML()); 
             }
-            $("order-form").submit(function () {
+            if (check_empty_cart()) {
+                return; 
+            }
+
+            var auto_date = new Date();
+            auto_date.setDate(auto_date.getDate() + 7); 
+            var date_str = auto_date.toISOString().substr(0, 10); 
+            $("#order-form").find("input").val(date_str); 
+
+            $("#order-form").submit(function () {
+                console.log("something...");
+                var deliv = $("#order-form").find("input").val(); 
+                var total = 0; 
+                var comments = $("#order-form").find("textarea").val(); 
+                $("#price").each(function() {
+                    var price = parseFloat($(this).text().replace("$", "")); 
+                    total += price; 
+                }); 
                 $.ajax({
                     url : '../php/cart.php',
                     type : 'POST', 
-                    data : {action : "order", total : 0.0},
+                    data : {action : "order", total : total, date : deliv, comments : comments},
                     success : function(result) {
                         if (result) {
                             alert(result); 
@@ -168,6 +183,7 @@ $(function() {
                         }
                     }
                 });
+                return false; 
             });
         }
     });

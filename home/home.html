@@ -15,7 +15,7 @@
             <input type="file" name="imageFileUpload" style="display: none"/>
         </form>
         <header>
-            <nav class="navbar navbar-expand-lg navbar-light navbar-fixed-top justify-content-between">
+            <nav class="navbar navbar-expand-sm navbar-light navbar-fixed-top justify-content-between">
                 <p class="navbar-brand">YummyCakes</p>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav mr-auto">
@@ -31,12 +31,26 @@
                     </ul>
 
                     <a class="btn btn-light mr-5" href="../createcake/createcake.html">Create Your Cake!</a>
+
+                    <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="search-filter" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Filter</a>
+                            <div class="dropdown-menu dropdown-menu-right w-100" aria-labelledby="navbarDropdown">
+                                <form class="form-inline w-100">
+                                    <div class="form-group">
+                                        <label class="form-label m-2" for="category">Category: </label>
+                                        <select id="category" class="form-control">
+                                            <option value="none">Any</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     
-                    
-                    <div class="form-inline">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <form id="search" class="form-inline navbar-form border-none">
+                        <label class="sr-only" for="search-text">Search</label>
+                        <input id="search-text" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
-                    </div>
+                    </form>
                     
                     <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="user-menu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

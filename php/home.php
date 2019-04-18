@@ -31,16 +31,53 @@ function add_to_cart($item, $quantity) {
     $_SESSION['cart'][$item] += $quantity; 
 }
 
-function get_dessert_items($link, $page, $page_size) {
+function get_categories($link) {
+    $is_admin = ($_SESSION['user'] == "admin" ? 0 : 1); 
+    $query = "SELECT DISTINCT category FROM dessert_item 
+        WHERE (available=1 OR available=$is_admin)
+        ORDER BY category ASC"; 
+    $result = mysqli_query($link, $query); 
+    if (!$result) {
+        echo "ERROR_QUERY_FAILED: "; 
+        echo mysqli_error($link); 
+    }
+    $categories = array(); 
+    while ($row = mysqli_fetch_array($result)) {
+        if ($row[0] != null) {
+            array_push($categories, $row[0]);
+        }
+    }
+    echo json_encode($categories); 
+}
+
+function get_dessert_items($link, $page, $page_size, $search, $category) {
     // Only retrieve currently available 
     $is_admin = ($_SESSION['user'] == "admin" ? 0 : 1); 
     $offset = ($page - 1) * $page_size; 
+    $search_safe = mysqli_real_escape_string($link, trim($search)); 
+    if ($category == "none") {
+        $category = "%"; 
+    }
     $ret_val = array(
         "admin" => ($_SESSION['user'] == "admin")
     );
+    $query_count = "SELECT COUNT(*) 
+        FROM dessert_item LEFT OUTER JOIN cake ON dessert_item.cake=cake.cake 
+        WHERE (dessert_item.available=1 OR dessert_item.available=$is_admin) AND (cake.preset=1 OR cake.preset IS NULL)
+        AND dessert_item.name LIKE '%$search%' AND dessert_item.category LIKE '$category'"; 
+    $count_result = mysqli_query($link, $query_count); 
+    if (!$count_result) {
+        echo "ERROR_QUERY_FAILED: ";
+        echo mysqli_error($link); 
+    }
+    $count_row = mysqli_fetch_array($count_result); 
+    $pages = ceil($count_row[0] / $page_size); 
+    $ret_val["pages"] = $pages; 
+
     $query = "SELECT dessert_item as id, name, image_file_name as file, description, price, cake.cake as cake_id, dessert_item.available 
         FROM dessert_item LEFT OUTER JOIN cake ON dessert_item.cake=cake.cake 
         WHERE (dessert_item.available=1 OR dessert_item.available=$is_admin) AND (cake.preset=1 OR cake.preset IS NULL)
+        AND dessert_item.name LIKE '%$search%' AND dessert_item.category LIKE '$category'
         LIMIT $page_size OFFSET $offset"; 
     $result = mysqli_query($link, $query);
     if (!$result) {
@@ -125,9 +162,21 @@ switch ($_POST['action']) {
         }
         $page = $_POST['page'];
         $page_size = $_POST['page_size'];
-        get_dessert_items($link, $page, $page_size); 
+        //echo json_encode($_POST);
+        $search = $_POST['search']; 
+        $category = $_POST['category']; 
+        get_dessert_items($link, $page, $page_size, $search, $category); 
         mysqli_close($link); 
         break; 
+    case "categories":
+        $link = db_connect(); 
+        if (!$link) {
+            echo "ERROR_DB_CONNECT"; 
+            exit(); 
+        }
+        get_categories($link); 
+        mysqli_close($link); 
+        break;
     case "add-cart":
         if (!(isset($_POST['item']) && isset($_POST['quantity']))) {
             echo "ERROR_PARAMS_NOT_SET"; 

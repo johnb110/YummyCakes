@@ -88,19 +88,21 @@ function update_cake($cake, $size, $quantity) {
     }
 }
 
-function place_order($link, $total) {
+function place_order($link, $total, $delivery, $comments) {
     $user = $_SESSION['user']; 
     $today = date("Y-m-d");
-    $expected = date("Y-m-d", strtotime("+1 week", strtotime($today))); 
-    $query = "SELECT start_order('$user', $total, '$today', '$expected', 'yay!');";
+    $comments_safe = mysqli_real_escape_string($link, trim($comments)); 
+    $query = "SELECT start_order('$user', $total, '$today', '$delivery', '$comments_safe');";
     $result = mysqli_query($link, $query); 
     if (!$result) {
-        echo "ERROR_QUERY_FAILED";
+        echo "ERROR_QUERY_FAILED: ";
+        echo mysqli_error($link); 
         exit(); 
     }
     $row = mysqli_fetch_array($result); 
     if (!$row) {
-        echo "ERROR_NO_RESULT"; 
+        echo "ERROR_NO_RESULT: "; 
+        echo mysqli_error($link); 
         exit(); 
     }
     $order_id = $row[0]; 
@@ -162,12 +164,14 @@ switch ($_POST['action']) {
         break;
     case "order":
         $total = $_POST['total']; 
+        $comments = $_POST['comments'];
+        $delivery = $_POST['date']; 
         $link = db_connect(); 
         if (!$link) {
             echo "ERROR_DB_CONNECT_FAILED"; 
             exit(); 
         }
-        place_order($link, $total); 
+        place_order($link, $total, $delivery, $comments); 
         mysqli_close($link); 
         break;
 }

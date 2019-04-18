@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 18, 2019 at 04:41 PM
+-- Generation Time: Apr 18, 2019 at 11:13 PM
 -- Server version: 10.1.38-MariaDB
--- PHP Version: 7.3.2
+-- PHP Version: 7.3.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -151,6 +151,7 @@ INSERT INTO `custom` (`custom`, `category`, `value`, `available`) VALUES
 CREATE TABLE `dessert_item` (
   `dessert_item` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `category` varchar(100) DEFAULT NULL,
   `image_file_name` varchar(250) DEFAULT NULL,
   `description` varchar(500) NOT NULL,
   `price` decimal(10,2) NOT NULL,
@@ -162,20 +163,20 @@ CREATE TABLE `dessert_item` (
 -- Dumping data for table `dessert_item`
 --
 
-INSERT INTO `dessert_item` (`dessert_item`, `name`, `image_file_name`, `description`, `price`, `available`, `cake`) VALUES
-(25, 'Chocolate-Dipped Pretzels', 'chocolate_dipped_pretzel_rods.jpg', 'Pretzels dipped in chocolate and sprinkles (6)', '2.99', 1, NULL),
-(26, 'Rice Krispie Treat', 'White-Chocolate-Krispie-Treats-Image.JPG', 'Traditional Rice Krispie Treat dipped in white chocolate (5)', '0.99', 1, NULL),
-(27, 'Cake Balls', 'cake_balls.jpg', 'Assorted cake balls (6)', '2.99', 1, NULL),
-(28, 'Chocolate Chip Cookies', 'chocolate_chip_cookies.jpg', 'Traditional chocolate chip cookies, like mom used to make (6)', '5.99', 1, NULL),
-(29, 'Peanut Butter Cookies', 'peanut_butter_cookies.jpg', 'Peanut butter-flavored cookies (6)', '5.99', 1, NULL),
-(30, 'Sugar Cookies', 'frosted_sugar_cookies.jpg', 'Classic sugar cookies, with pink frosting and sprinkles (6)', '5.99', 1, NULL),
-(31, 'Snickerdoodles', 'snickerdoodles.jpg', 'Cookies baked with cinnamon and sugar (6)', '5.99', 1, NULL),
-(32, 'Chocolate Cupcakes', 'chocolate_cupcakes.jpg', 'Chocolate cupcakes with chocolate frosting (4)', '4.99', 1, NULL),
-(34, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 5),
-(35, 'Custom Cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: [None]', '0.32', 1, 6),
-(41, 'Brownies', 'brownies.jpg', 'Yummy brownies! (6)', '12.99', 1, NULL),
-(44, 'Cheesecake Bites', 'cheesecake_bites.jpg', 'Chocolate-covered strawberry cheesecake bites (10)', '19.99', 1, NULL),
-(45, 'Custom Cake', NULL, 'Flavor: Butter, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 7);
+INSERT INTO `dessert_item` (`dessert_item`, `name`, `category`, `image_file_name`, `description`, `price`, `available`, `cake`) VALUES
+(25, 'Chocolate-Dipped Pretzels', 'misc', 'chocolate_dipped_pretzel_rods.jpg', 'Pretzels dipped in chocolate and sprinkles (6)', '2.99', 1, NULL),
+(26, 'Rice Krispie Treat', 'misc', 'White-Chocolate-Krispie-Treats-Image.JPG', 'Traditional Rice Krispie Treat dipped in white chocolate (5)', '0.99', 1, NULL),
+(27, 'Cake Balls', 'misc', 'cake_balls.jpg', 'Assorted cake balls (6)', '2.99', 1, NULL),
+(28, 'Chocolate Chip Cookies', 'cookies', 'chocolate_chip_cookies.jpg', 'Traditional chocolate chip cookies, like mom used to make (6)', '5.99', 1, NULL),
+(29, 'Peanut Butter Cookies', 'cookies', 'peanut_butter_cookies.jpg', 'Peanut butter-flavored cookies (6)', '5.99', 1, NULL),
+(30, 'Sugar Cookies', 'cookies', 'frosted_sugar_cookies.jpg', 'Classic sugar cookies, with pink frosting and sprinkles (6)', '5.99', 1, NULL),
+(31, 'Snickerdoodles', 'cookies', 'snickerdoodles.jpg', 'Cookies baked with cinnamon and sugar (6)', '5.99', 1, NULL),
+(32, 'Chocolate Cupcakes', 'cupcakes', 'chocolate_cupcakes.jpg', 'Chocolate cupcakes with chocolate frosting (4)', '4.99', 1, NULL),
+(34, 'Custom Cake', 'cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 5),
+(35, 'Custom Cake', 'cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: [None]', '0.32', 1, 6),
+(41, 'Brownies', 'brownies', 'brownies.jpg', 'Yummy brownies! (6)', '12.99', 1, NULL),
+(44, 'Cheesecake Bites', 'misc', 'cheesecake_bites.jpg', 'Chocolate-covered strawberry cheesecake bites (10)', '19.99', 1, NULL),
+(45, 'Custom Cake', 'cake', NULL, 'Flavor: Butter, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 7);
 
 -- --------------------------------------------------------
 
@@ -197,15 +198,7 @@ CREATE TABLE `dessert_order` (
 --
 
 INSERT INTO `dessert_order` (`dessert_order`, `user`, `total_cost`, `placed`, `expected`, `comments`) VALUES
-(21, 'johnberlien@gmail.com', '0.00', '2019-03-22', '2019-03-29', 'yay!'),
-(22, 'johnberlien@gmail.com', '0.00', '2019-03-23', '2019-03-30', 'yay!'),
-(23, 'johnberlien@gmail.com', '0.00', '2019-03-24', '2019-03-31', 'yay!'),
-(24, 'johnberlien@gmail.com', '0.00', '2019-03-25', '2019-04-01', 'yay!'),
-(25, 'johnberlien@gmail.com', '0.00', '2019-03-27', '2019-04-03', 'yay!'),
-(26, 'johnberlien@gmail.com', '0.00', '2019-03-26', '2019-04-02', 'yay!'),
-(27, 'johnberlien@gmail.com', '0.00', '2019-04-01', '2019-04-08', 'yay!'),
-(28, 'johnberlien@gmail.com', '0.00', '2019-04-01', '2019-04-08', 'yay!'),
-(29, 'johnberlien@gmail.com', '0.00', '2019-04-01', '2019-04-08', 'yay!');
+(32, 'johnberlien@gmail.com', '2.99', '2019-04-18', '2019-04-25', 'Yummy!');
 
 -- --------------------------------------------------------
 
@@ -226,27 +219,7 @@ CREATE TABLE `order_item` (
 --
 
 INSERT INTO `order_item` (`dessert_order`, `dessert_item`, `cake_size`, `cost`, `quantity`) VALUES
-(21, 25, NULL, '0.00', 7),
-(21, 26, NULL, '0.00', 5),
-(22, 25, NULL, '0.00', 6),
-(22, 26, NULL, '0.00', 2),
-(22, 27, NULL, '0.00', 9),
-(22, 28, NULL, '0.00', 4),
-(23, 26, NULL, '0.00', 6),
-(23, 27, NULL, '0.00', 15),
-(23, 28, NULL, '0.00', 4),
-(24, 25, NULL, '0.00', 6),
-(24, 26, NULL, '0.00', 3),
-(25, 25, NULL, '0.00', 4),
-(25, 26, NULL, '0.00', 2),
-(25, 27, NULL, '0.00', 4),
-(26, 25, NULL, '0.00', 5),
-(26, 28, NULL, '0.00', 14),
-(26, 29, NULL, '0.00', 2),
-(27, 25, NULL, '0.00', 1),
-(27, 35, 6, '0.00', 1),
-(28, 35, 6, '0.00', 1),
-(29, 35, 6, '0.00', 1);
+(32, 25, NULL, '0.00', 1);
 
 -- --------------------------------------------------------
 
@@ -339,7 +312,7 @@ ALTER TABLE `dessert_item`
 -- AUTO_INCREMENT for table `dessert_order`
 --
 ALTER TABLE `dessert_order`
-  MODIFY `dessert_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `dessert_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- Constraints for dumped tables
