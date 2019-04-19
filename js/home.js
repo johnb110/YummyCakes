@@ -138,7 +138,7 @@ class DessertItemAdmin {
         $form.append($save); 
         $form.submit( function () {
             var img_file_name = null; 
-            if (img.prop('src')) {
+            if ($img.prop('src')) {
                 img_file_name = get_file_name($img.attr('src'));
             }
             var available = $available.is(":checked") ? 1 : 0; 
@@ -151,6 +151,7 @@ class DessertItemAdmin {
                 price : parseFloat($price.val()).toFixed(2),
                 available : available
             }; 
+            console.log(JSON.stringify($item_changes)); 
             $.ajax({
                 method : 'POST',
                 url : '../php/home.php',
@@ -314,9 +315,13 @@ function add_handlers_to_form($form) {
                     return; 
                 }
                 item = new DessertItemAdmin(JSON.parse(response));
-                $("#item-list").append(item.getHTML()); 
+                $form[0].reset(); 
+                get_items(); 
+                //$("#item-list").append(item.getHTML()); 
             }
         }); 
+
+        return false; 
     });
 }
 

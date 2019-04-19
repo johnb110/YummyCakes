@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 19, 2019 at 05:27 PM
+-- Generation Time: Apr 19, 2019 at 06:17 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -184,7 +184,12 @@ INSERT INTO `dessert_item` (`dessert_item`, `name`, `category`, `image_file_name
 (41, 'Brownies', 'brownies', 'brownies.jpg', 'Yummy brownies! (6)', '12.99', 1, NULL),
 (44, 'Cheesecake Bites', 'misc', 'cheesecake_bites.jpg', 'Chocolate-covered strawberry cheesecake bites (10)', '19.99', 1, NULL),
 (45, 'Custom Cake', 'cake', NULL, 'Flavor: Butter, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 7),
-(48, 'Blueberry Muffin', 'muffins', NULL, 'Blueberry muffins!', '1.99', 1, NULL);
+(48, 'Blueberry Muffin', 'muffins', 'null', 'Muffins baked with fresh, wild blueberries.', '1.99', 1, NULL),
+(49, 'Lemon Poppyseed Muffin', 'muffins', NULL, 'Yummy', '1.99', 1, NULL),
+(50, 'Cinnamon Streusel Muffin', 'muffins', NULL, 'Yummy', '1.99', 1, NULL),
+(52, 'Chocolate Chip Muffin', 'muffins', NULL, 'Chocolate muffins baked with chocolate chips.', '1.99', 1, NULL),
+(53, 'Bran Muffin', 'muffins', NULL, 'Icky', '1.99', 1, NULL),
+(57, 'Lemon Bars', 'other', NULL, 'Lemon bars sprinkled with powdered sugar (6)', '4.99', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -314,7 +319,7 @@ ALTER TABLE `custom`
 -- AUTO_INCREMENT for table `dessert_item`
 --
 ALTER TABLE `dessert_item`
-  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `dessert_order`
