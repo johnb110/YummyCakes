@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 18, 2019 at 11:13 PM
+-- Generation Time: Apr 19, 2019 at 05:27 PM
 -- Server version: 10.1.38-MariaDB
--- PHP Version: 7.3.3
+-- PHP Version: 7.3.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -54,10 +54,17 @@ BEGIN
     RETURN LAST_INSERT_ID();
 END$$
 
-CREATE DEFINER=`root`@`localhost` FUNCTION `insert_new_item` (`name` VARCHAR(100), `image_file_name` VARCHAR(250), `description` VARCHAR(500), `price` DECIMAL(10,2)) RETURNS INT(11) NO SQL
+CREATE DEFINER=`root`@`localhost` FUNCTION `insert_new_item` (`name` VARCHAR(100), `image_file_name` VARCHAR(250), `description` VARCHAR(500), `price` DECIMAL(10,2), `category` VARCHAR(100)) RETURNS INT(11) NO SQL
 BEGIN
-    INSERT INTO dessert_item (`name`, `image_file_name`, `description`, `price`, `available`) 
-        VALUES (name, image_file_name, description, price, 1); 
+	IF image_file_name='' THEN
+    	INSERT INTO dessert_item (`name`, `category`, `description`,
+        	`price`, `available`)
+            VALUES (name, category, description, price, 1); 
+    ELSE
+    	INSERT INTO dessert_item (`name`, `image_file_name`, 					`description`, `price`, `category`, `available`) 
+        VALUES (name, image_file_name, description, price, category, 1);
+    END IF; 
+     
     RETURN LAST_INSERT_ID();
 END$$
 
@@ -164,8 +171,8 @@ CREATE TABLE `dessert_item` (
 --
 
 INSERT INTO `dessert_item` (`dessert_item`, `name`, `category`, `image_file_name`, `description`, `price`, `available`, `cake`) VALUES
-(25, 'Chocolate-Dipped Pretzels', 'misc', 'chocolate_dipped_pretzel_rods.jpg', 'Pretzels dipped in chocolate and sprinkles (6)', '2.99', 1, NULL),
-(26, 'Rice Krispie Treat', 'misc', 'White-Chocolate-Krispie-Treats-Image.JPG', 'Traditional Rice Krispie Treat dipped in white chocolate (5)', '0.99', 1, NULL),
+(25, 'Chocolate-Dipped Pretzels', 'Misc', 'chocolate_dipped_pretzel_rods.jpg', 'Pretzels dipped in chocolate and sprinkles (6)', '2.99', 1, NULL),
+(26, 'Rice Krispie Treat', 'misc', 'White-Chocolate-Krispie-Treats-Image.JPG', 'Traditional Rice Krispie Treat dipped in white chocolate (5)', '2.99', 1, NULL),
 (27, 'Cake Balls', 'misc', 'cake_balls.jpg', 'Assorted cake balls (6)', '2.99', 1, NULL),
 (28, 'Chocolate Chip Cookies', 'cookies', 'chocolate_chip_cookies.jpg', 'Traditional chocolate chip cookies, like mom used to make (6)', '5.99', 1, NULL),
 (29, 'Peanut Butter Cookies', 'cookies', 'peanut_butter_cookies.jpg', 'Peanut butter-flavored cookies (6)', '5.99', 1, NULL),
@@ -176,7 +183,8 @@ INSERT INTO `dessert_item` (`dessert_item`, `name`, `category`, `image_file_name
 (35, 'Custom Cake', 'cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: [None]', '0.32', 1, 6),
 (41, 'Brownies', 'brownies', 'brownies.jpg', 'Yummy brownies! (6)', '12.99', 1, NULL),
 (44, 'Cheesecake Bites', 'misc', 'cheesecake_bites.jpg', 'Chocolate-covered strawberry cheesecake bites (10)', '19.99', 1, NULL),
-(45, 'Custom Cake', 'cake', NULL, 'Flavor: Butter, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 7);
+(45, 'Custom Cake', 'cake', NULL, 'Flavor: Butter, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 7),
+(48, 'Blueberry Muffin', 'muffins', NULL, 'Blueberry muffins!', '1.99', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -306,7 +314,7 @@ ALTER TABLE `custom`
 -- AUTO_INCREMENT for table `dessert_item`
 --
 ALTER TABLE `dessert_item`
-  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `dessert_order`

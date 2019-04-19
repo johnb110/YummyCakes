@@ -24,31 +24,75 @@ class DessertItem  {
         var $price = this.price; 
         var $price_text = $("<p>", {class : "mr-3", text : "$" + this.price }); 
         $price_row.append($price_text); 
+        var $size_select; 
+        if (this.cake_id) {
+            $size_select = $("<select>", {class : "form-control mr-3 form-control-sm"});
+            var sizes = [6, 8, 10, 12];
+            for (i in sizes) {
+                $size_select.append($("<option>", {val : sizes[i], text : sizes[i].toString() + "\""})); 
+            }
+            $price_row.append($size_select); 
+        }
         var $quant_select = $("<select>", {class : "form-control mr-3 form-control-sm"}); 
         for (var i = 1; i <= 10; i++) {
             $quant_select.append($("<option>", {val : i, text : i.toString()})); 
         }
-        $quant_select.change(function() {
-            $price_text.text("$" + (parseFloat($price) * parseInt($(this).val(), 10)).toFixed(2)); 
-        }); 
+        if (this.cake_id) {
+            $quant_select.change(function() {
+                var price = cake_price(parseFloat($price), parseInt($size_select.val(), 10)) * 
+                    parseInt($quant_select.val(), 10);
+                $price_text.text("$" + price.toFixed(2)); 
+            }); 
+            $size_select.change(function() {
+                var price = cake_price(parseFloat($price), parseInt($size_select.val(), 10)) * 
+                    parseInt($quant_select.val(), 10);
+                $price_text.text("$" + price.toFixed(2)); 
+            }); 
+            $quant_select.change(); 
+        }
+        else {
+            $quant_select.change(function() {
+                $price_text.text("$" + (parseFloat($price) * parseInt($(this).val(), 10)).toFixed(2)); 
+            });
+        }
+        
         $price_row.append($quant_select); 
         $in_container.append($price_row); 
 
         var $last_row = $("<div>", {class : "d-flex flex-row"}); 
-        $last_row.append($("<button>", {text : "Add to cart", class : "btn float-left"}).click( function () {
-            $.ajax({
-                url : '../php/home.php',
-                type : 'POST',
-                data : { action : "add-cart", item : $id, quantity : $quant_select.val()}, 
-                success : function (json) {
-                    alert($name + " added to cart"); 
-                }
-            });
-        }));
+        $last_row.append($("<button>", {text : "Add to cart", class : "btn float-left"}));
+        if (this.cake_id) {
+            $last_row.find("button").click( function () {
+                $.ajax({
+                    url : '../php/home.php',
+                    type : 'POST',
+                    data : { action : "add-cake", item : $id, size : $size_select.val(), quantity : $quant_select.val()}, 
+                    success : function (json) {
+                        alert($name + " added to cart"); 
+                    }
+                });
+            })
+        }
+        else {
+            $last_row.find("button").click(function () {
+                $.ajax({
+                    url : '../php/home.php',
+                    type : 'POST',
+                    data : { action : "add-cart", item : $id, quantity : $quant_select.val()}, 
+                    success : function (json) {
+                        alert($name + " added to cart"); 
+                    }
+                });
+            }); 
+        }
         $in_container.append($last_row); 
         $container.append($in_container); 
         return $item; 
     }
+}
+
+function cake_price(price_per_inch, size) {
+    return price_per_inch * size * size; 
 }
 
 class DessertItemAdmin {
@@ -59,6 +103,7 @@ class DessertItemAdmin {
         this.description = json.description; 
         this.price = json.price; 
         this.cake_id = json.cake_id; 
+        this.category = json.category; 
         this.available = json.available; 
     }
 
@@ -70,10 +115,12 @@ class DessertItemAdmin {
         var $img = $("<img>", {alt : "["+this.name+" image]", src : "../images/"+this.file, class : "dessert-item"}); 
         add_upload_func($img); 
         $container.append($img); 
-        var $form = $("<div>"); 
-        var $name = $("<input>", {class : "form-control", type : "text", val : this.name }); 
-        var $desc = $("<textarea>", {class : "form-control", rows : "3", val : this.description}); 
+        var $form = $("<form>"); 
+        var $name = $("<input>", {class : "form-control", type : "text", val : this.name, placeholder : "Name"}); 
+        var $desc = $("<textarea>", {class : "form-control", rows : "3", val : this.description, placeholder : "Description"}); 
+        var $cat = $("<input>", {class : "form-control", type : "text", val : capitalize(this.category), placeholder : "Category"}); 
         $form.append($name);
+        $form.append($cat);
         $form.append($desc);
         var $price_row = $("<div>", {class : "input-group mb-3"}); 
         $price_row.append($("<div>", {class : "input-group-prepend"}));
@@ -87,13 +134,19 @@ class DessertItemAdmin {
         $check_row.append($available); 
         $check_row.append($("<label>", {class : "form-check-label", html : "Available", for : "available"+id}));
         $form.append($check_row); 
-        var $save = $("<button>", {class : "btn btn-primary mt-2", text : "Save Changes"}).click(function() {
-            var img_file_name = get_file_name($img.attr('src')); 
+        var $save = $("<button>", {class : "btn btn-primary mt-2", text : "Save Changes"}); 
+        $form.append($save); 
+        $form.submit( function () {
+            var img_file_name = null; 
+            if (img.prop('src')) {
+                img_file_name = get_file_name($img.attr('src'));
+            }
             var available = $available.is(":checked") ? 1 : 0; 
             var $item_changes = {
                 id : id,
                 name : $name.val(), 
                 file : img_file_name,
+                category : $cat.val().toLowerCase(),
                 description : $desc.val(),
                 price : parseFloat($price.val()).toFixed(2),
                 available : available
@@ -106,8 +159,8 @@ class DessertItemAdmin {
                     console.log(response); 
                 }
             }); 
+            return false;
         }); 
-        $form.append($save); 
         $container.append($form); 
         return $item; 
     }
@@ -204,7 +257,7 @@ function get_items() {
                 }
                 $("#item-list").append(item.getHTML()); 
             }
-            $form = $("main form"); 
+            $form = $("#new-item"); 
             if (!admin) {
                 $form.remove();  
             }
@@ -221,12 +274,13 @@ function get_items() {
 function add_handlers_to_form($form) {
     $img = $form.find("img"); 
     add_upload_func($img);
-    $name = $form.find("input[type='text']");
+    $name = $form.find("#new-name");
     $desc = $form.find("textarea"); 
+    $cat = $form.find("#new-category");
     $price = $form.find("input[type='number']"); 
 
     $form.submit(function(){
-        if (!$name.val() || !$desc.val() || !$price.val()) {
+        if (!$name.val() || !$desc.val() || !$cat.val() || !$price.val()) {
             alert("All fields required!"); 
             return false; 
         }
@@ -234,13 +288,18 @@ function add_handlers_to_form($form) {
             alert("Price must be positive number!"); 
             return false; 
         }
+        var img_file_name = null; 
+        if ($img.attr('src')) {
+            img_file_name = get_file_name($img.attr('src')); 
+        }
         $new_item = {
             name : $name.val(),
             description : $desc.val(),
+            category : $cat.val().toLowerCase(),
             price : parseFloat($price.val()).toFixed(2),
-            image_file_name : get_file_name($img.attr('src'))
+            image_file_name : img_file_name
         };
-        //console.log(JSON.stringify($new_item)); 
+        console.log(JSON.stringify($new_item)); 
         $.ajax({
             url : '../php/home.php',
             method : 'POST',

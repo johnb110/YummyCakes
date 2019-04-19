@@ -31,6 +31,19 @@ function add_to_cart($item, $quantity) {
     $_SESSION['cart'][$item] += $quantity; 
 }
 
+function add_to_cake($item, $size, $quantity) {
+    if (!isset($_SESSION['cakes'])) {
+        $_SESSION['cakes'] = array(); 
+    }
+    if (!isset($_SESSION['cakes'][$item])) {
+        $_SESSION['cakes'][$item] = array(); 
+    }
+    if (!isset($_SESSION['cakes'][$item][$size])) {
+        $_SESSION['cakes'][$item][$size] = 0; 
+    }
+    $_SESSION['cakes'][$item][$size] += $quantity;
+}
+
 function get_categories($link) {
     $is_admin = ($_SESSION['user'] == "admin" ? 0 : 1); 
     $query = "SELECT DISTINCT category FROM dessert_item 
@@ -74,7 +87,8 @@ function get_dessert_items($link, $page, $page_size, $search, $category) {
     $pages = ceil($count_row[0] / $page_size); 
     $ret_val["pages"] = $pages; 
 
-    $query = "SELECT dessert_item as id, name, image_file_name as file, description, price, cake.cake as cake_id, dessert_item.available 
+    $query = "SELECT dessert_item as id, name, image_file_name as file, description, price, 
+        cake.cake as cake_id, dessert_item.available, category
         FROM dessert_item LEFT OUTER JOIN cake ON dessert_item.cake=cake.cake 
         WHERE (dessert_item.available=1 OR dessert_item.available=$is_admin) AND (cake.preset=1 OR cake.preset IS NULL)
         AND dessert_item.name LIKE '%$search%' AND dessert_item.category LIKE '$category'
@@ -97,12 +111,13 @@ function update_item($link, $changes) {
     $id = $changes["id"]; 
     $name = mysqli_real_escape_string($link, trim($changes["name"]));
     $file = mysqli_real_escape_string($link, trim($changes["file"]));
+    $cat = mysqli_real_escape_string($link, trim($changes["category"])); 
     $desc = mysqli_real_escape_string($link, trim($changes["description"]));
     $price = mysqli_real_escape_string($link, trim($changes["price"])); 
     $available = mysqli_real_escape_string($link, trim($changes["available"])); 
 
     $query = "UPDATE dessert_item 
-        SET name='$name', image_file_name='$file', description='$desc', price=$price, available=$available
+        SET name='$name', image_file_name='$file', description='$desc', category='$cat', price=$price, available=$available
         WHERE dessert_item=$id;"; 
 
     $result = mysqli_query($link, $query); 
@@ -114,11 +129,15 @@ function update_item($link, $changes) {
 
 function insert_item($link, $new_item) {
     $name = mysqli_real_escape_string($link, trim($new_item["name"]));
-    $file = mysqli_real_escape_string($link, trim($new_item["image_file_name"]));
+    $file = null; 
+    if (! is_null($new_item['image_file_name'])) {
+        $file = mysqli_real_escape_string($link, trim($new_item["image_file_name"]));
+    }
+    $cat = mysqli_real_escape_string($link, trim($new_item['category'])); 
     $desc = mysqli_real_escape_string($link, trim($new_item["description"]));
     $price = mysqli_real_escape_string($link, trim($new_item["price"]));
 
-    $query = "SELECT insert_new_item ('$name', '$file', '$desc', $price);"; 
+    $query = "SELECT insert_new_item ('$name', '$file', '$desc', $price, '$cat');"; 
     
     $result = mysqli_query($link, $query); 
     if (!$result) {
@@ -129,7 +148,8 @@ function insert_item($link, $new_item) {
     $row = mysqli_fetch_array($result); 
     $id = $row[0]; 
 
-    $query = "SELECT dessert_item as id, name, image_file_name as file, description, price, dessert_item.available, cake
+    $query = "SELECT dessert_item as id, name, image_file_name as file, description, price, 
+        dessert_item.available, cake, category
         FROM dessert_item WHERE dessert_item=$id;"; 
     $result = mysqli_query($link, $query); 
     if (!$result) {
@@ -184,6 +204,9 @@ switch ($_POST['action']) {
         }
         add_to_cart($_POST['item'], $_POST['quantity']); 
         break; 
+    case "add-cake":
+        add_to_cake($_POST['item'], $_POST['size'], $_POST['quantity']); 
+        break;
     case "update":
         if ($_SESSION['user'] != "admin") {
             echo "ERROR_PRIVELEGES"; 
