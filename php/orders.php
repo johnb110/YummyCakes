@@ -23,7 +23,7 @@ function db_connect() {
 
 function get_past_orders($link, $user) {
     $orders = array(); 
-    $query = "SELECT * FROM dessert_order WHERE user='$user'"; 
+    $query = "SELECT * FROM dessert_order WHERE user='$user' ORDER BY placed DESC"; 
     $orders_result = mysqli_query($link, $query); 
     if (!$orders_result) {
         echo "ERROR_QUERY_FAILED"; 

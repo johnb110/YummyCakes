@@ -64,7 +64,8 @@ function submit_cake($link, $selections) {
     $query = "SELECT cake FROM cake WHERE flavor=$flavor AND frosting=$frosting AND filling=$filling";
     $result = mysqli_query($link, $query); 
     if (!$result) {
-        echo "ERROR_QUERY_FAILED"; 
+        echo "ERROR_QUERY_FAILED".$query; 
+        echo mysqli_error($link);
         exit(); 
     }
     $item_id = -1; 
@@ -84,6 +85,7 @@ function submit_cake($link, $selections) {
             $result = mysqli_query($link, $query); 
             if (!$result) {
                 echo "ERROR_QUERY_FAILED"; 
+                echo mysqli_error($link);
                 exit(); 
             }
             $row = mysqli_fetch_assoc($result); 
@@ -124,6 +126,7 @@ function add_new_custom($link, $category, $new_custom) {
     $result = mysqli_query($link, $query); 
     if (!$result) {
         echo "ERROR_QUERY_FAILED"; 
+        echo mysqli_error($link);
         exit(); 
     }
     $row = mysqli_fetch_array($result); 

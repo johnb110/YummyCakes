@@ -8,8 +8,9 @@ class Option {
         var $group = $("<div>", {class : "form-group"});
         $group.append($("<label>", {for : this.category, text : capitalize(this.category)})); 
         var $select = $("<select>", {class : "form-control", id : this.category});
-        for (var i in this.options) {
-            $select.append($("<option>", { value : this.options[i].id, html : this.options[i].value })); 
+        for (var i in Object.keys(this.options)) {
+            var id = Object.keys(this.options)[i]
+            $select.append($("<option>", { value : id, html : this.options[id].value })); 
         }
         $group.append($select); 
         return $group; 
@@ -30,7 +31,8 @@ class OptionAdmin {
         var $row = $("<div>", { class : "row" });
         var $sel_div = $("<div>", {class : "col-md-8"}); 
         var $select = $("<select>", { class : "form-control", id : this.category});
-        for (var id in this.options) {
+        for (var i in Object.keys(this.options)) {
+            var id = Object.keys(this.options)[i]
             $select.append($("<option>", { value : id, html : this.options[id].value })); 
         }
         
@@ -43,7 +45,6 @@ class OptionAdmin {
         $check.click(function() {
             var id  = $select.val(); 
             var available = $(this).prop('checked') ? 1 : 0; 
-            console.log(available); 
             $.ajax({
                 url : '../php/createcake.php',
                 type : 'POST',
@@ -119,6 +120,7 @@ $(function() {
             parsed = JSON.parse(json); 
             admin = parsed.admin; 
             var options = parsed.options; 
+            console.log(options)
             $form = $("#cake-form"); 
             for (key in options) {
                 var option; 
@@ -158,7 +160,7 @@ $(function() {
             data : {action : "submit", select : JSON.stringify(selections)}, 
             success : function (result) {
                 if (result) {
-                    alert(result); 
+                    alert("Cake created!"); 
                 }
             }
         });

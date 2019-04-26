@@ -43,7 +43,7 @@ class CartItem {
 
 function add_price_row(id, price, quantity, size=null) {
     var $price_row = $("<div>", {class : "container d-flex mr-3 flex-row align-items-start"}); 
-    var $price_text = $("<label>", {id : "price", class: "mr-3 form-control", text : "$" + (price * quantity).toFixed(2) });
+    var $price_text = $("<label>", {class: "price mr-3 form-control", text : "$" + (price * quantity).toFixed(2) });
     $price_row.append($price_text); 
     if (size) {
         $price_row.append($("<label>", {class : "mr-3 form-control", text : "Size: " + size + "\""}));
@@ -57,12 +57,14 @@ function add_price_row(id, price, quantity, size=null) {
         $quant_select.change(function () {
             update_cake(id, size, $(this).val()); 
             $price_text.text("$" + (price * $(this).val()).toFixed(2)); 
+            update_total(); 
         }); 
     }
     else {
         $quant_select.change(function() {
             update_cart(id, $(this).val()); 
             $price_text.text("$" + (price * $(this).val()).toFixed(2)); 
+            update_total(); 
         }); 
     }
     $price_row.append($quant_select);
@@ -70,8 +72,8 @@ function add_price_row(id, price, quantity, size=null) {
         $price_row.append($("<button>", {class : "btn", text : "Remove"}).click( function() {
             update_cake(id, size, 0); 
             $price_row.remove();
-            // TODO: check if there are any price rows left in item
             $item = $("#"+id); 
+            update_total(); 
             if ($item.find("button").length == 0) {
                 $item.remove(); 
                 check_empty_cart(); 
@@ -82,6 +84,7 @@ function add_price_row(id, price, quantity, size=null) {
         $price_row.append($("<button>", {class : "btn", text : "Remove"}).click( function() {
             update_cart(id, 0); 
             $("#"+id).remove(); 
+            update_total(); 
             check_empty_cart(); 
         })); 
     }
@@ -128,6 +131,16 @@ function update_cart(item, quantity) {
     });
 }
 
+function update_total() {
+    var total = 0; 
+    console.log($("#price"));
+    $(".price").each(function() {
+        var price = parseFloat($(this).text().replace("$", "")); 
+        total += price; 
+    });
+    $("#total").text("$" + total.toFixed(2)); 
+}
+
 $(function() {
     $.ajax({
         url : '../php/cart.php',
@@ -152,6 +165,7 @@ $(function() {
                 var cake = new CartItem(cart.cakes[i], true); 
                 $("#item-list").append(cake.getHTML()); 
             }
+            update_total();
             if (check_empty_cart()) {
                 return; 
             }
@@ -162,14 +176,9 @@ $(function() {
             $("#order-form").find("input").val(date_str); 
 
             $("#order-form").submit(function () {
-                console.log("something...");
                 var deliv = $("#order-form").find("input").val(); 
-                var total = 0; 
+                var total = parseFloat($("#total").text().replace("$", ""));
                 var comments = $("#order-form").find("textarea").val(); 
-                $("#price").each(function() {
-                    var price = parseFloat($(this).text().replace("$", "")); 
-                    total += price; 
-                }); 
                 $.ajax({
                     url : '../php/cart.php',
                     type : 'POST', 
