@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 26, 2019 at 11:59 PM
+-- Generation Time: Apr 27, 2019 at 11:13 PM
 -- Server version: 10.1.38-MariaDB
--- PHP Version: 7.3.3
+-- PHP Version: 7.3.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -26,8 +26,8 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_new_user` (IN `email` VARCHAR(250), IN `pass_word` VARCHAR(100))  BEGIN
-	INSERT INTO user VALUES (email, pass_word); 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_new_user` (IN `email` VARCHAR(250), IN `pass_word` VARCHAR(100), IN `phone` VARCHAR(10))  BEGIN
+	INSERT INTO user VALUES (email, pass_word, phone); 
 END$$
 
 --
@@ -49,8 +49,8 @@ BEGIN
     SELECT value INTO @fst_name FROM `custom` WHERE `custom`=frosting;
     SELECT value INTO @fll_name FROM `custom` WHERE `custom`=filling;
     SET @desc = CONCAT('Flavor: ',@flv_name,', Frosting: ',@fst_name,', Filling: ',@fll_name);
-    INSERT INTO `dessert_item` (`name`, `description`, `price`, `available`, `cake`) 
-        VALUES ('Custom Cake', @desc, 0.32, 1, @cake_id); 
+    INSERT INTO `dessert_item` (`name`, `category`,`description`, `price`, `available`, `cake`) 
+        VALUES ('Custom Cake', 'cake', @desc, 0.32, 1, @cake_id); 
     RETURN LAST_INSERT_ID();
 END$$
 
@@ -108,8 +108,7 @@ INSERT INTO `cake` (`cake`, `flavor`, `frosting`, `filling`, `preset`, `availabl
 (5, 61, 67, 73, 0, 1),
 (6, 61, 67, 72, 1, 1),
 (7, 63, 67, 73, 1, 1),
-(8, 64, 67, 73, 0, 1),
-(9, 64, 68, 72, 0, 1);
+(10, 64, 68, 72, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -192,8 +191,13 @@ INSERT INTO `dessert_item` (`dessert_item`, `name`, `category`, `image_file_name
 (52, 'Chocolate Chip Muffin', 'muffins', NULL, 'Chocolate muffins baked with chocolate chips.', '1.99', 1, NULL),
 (53, 'Bran Muffin', 'muffins', NULL, 'Icky', '1.99', 1, NULL),
 (57, 'Lemon Bars', 'other', NULL, 'Lemon bars sprinkled with powdered sugar (6)', '4.99', 1, NULL),
-(58, 'Custom Cake', NULL, NULL, 'Flavor: Strawberry, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 8),
-(59, 'Custom Cake', NULL, NULL, 'Flavor: Strawberry, Frosting: Vanilla, Filling: [None]', '0.32', 1, 9);
+(60, 'Peanut Butter Brownies', 'brownies', NULL, 'Yummy peanut butter brownies (so good)', '6.99', 1, NULL),
+(61, 'Custom Cake', 'cake', NULL, 'Flavor: Strawberry, Frosting: Vanilla, Filling: [None]', '0.32', 1, 10),
+(62, 'White Chocolate Macadamia Nut Cookies', 'cookies', NULL, 'Cookies with white chocolate chips and macadamia nuts!', '5.99', 1, NULL),
+(63, 'Chocolate Chocolate Chip Cookies', 'cookies', NULL, 'Chocolate cookies with chocolate chips - lots of chocolate!', '6.99', 1, NULL),
+(64, 'Lemon Cookies', 'cookies', NULL, 'Lemon-flavored cookies!', '5.99', 1, NULL),
+(65, 'Chocolate Peanut Butter Cookies', 'cookies', NULL, 'Peanut butter sandwich cookies covered in chocolate!', '7.99', 1, NULL),
+(66, 'Oatmeal Raisin Cookies', 'cookies', NULL, 'Because you have to throw in oatmeal raisin, I guess. Who likes these, anyway?', '3.99', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -216,11 +220,7 @@ CREATE TABLE `dessert_order` (
 
 INSERT INTO `dessert_order` (`dessert_order`, `user`, `total_cost`, `placed`, `expected`, `comments`) VALUES
 (32, 'johnberlien@gmail.com', '2.99', '2019-04-18', '2019-04-25', 'Yummy!'),
-(33, 'johnberlien@gmail.com', '11.96', '2019-04-26', '2019-05-03', 'Yum!'),
-(34, 'johnberlien@gmail.com', '20.48', '2019-04-26', '2019-05-03', 'Yummy cakes!'),
-(35, 'johnberlien@gmail.com', '23.04', '2019-04-26', '2019-05-03', 'Awesome cakes!'),
-(36, 'johnberlien@gmail.com', '35.88', '2019-04-26', '2019-05-03', 'Got me some yummy treats!'),
-(37, 'johnberlien@gmail.com', '71.88', '2019-04-26', '2019-05-03', 'Let\'s order!');
+(33, 'johnberlien@gmail.com', '11.96', '2019-04-26', '2019-05-03', 'Yum!');
 
 -- --------------------------------------------------------
 
@@ -242,15 +242,7 @@ CREATE TABLE `order_item` (
 
 INSERT INTO `order_item` (`dessert_order`, `dessert_item`, `cake_size`, `cost`, `quantity`) VALUES
 (32, 25, NULL, '0.00', 1),
-(33, 25, NULL, '0.00', 4),
-(34, 58, 8, '0.00', 1),
-(34, 59, 6, '0.00', 1),
-(35, 35, 6, '0.00', 2),
-(35, 45, 6, '0.00', 1),
-(36, 25, NULL, '0.00', 6),
-(36, 26, NULL, '0.00', 6),
-(37, 28, NULL, '0.00', 6),
-(37, 29, NULL, '0.00', 6);
+(33, 25, NULL, '0.00', 4);
 
 -- --------------------------------------------------------
 
@@ -260,16 +252,18 @@ INSERT INTO `order_item` (`dessert_order`, `dessert_item`, `cake_size`, `cost`, 
 
 CREATE TABLE `user` (
   `user` varchar(250) NOT NULL,
-  `pass_word` varchar(100) NOT NULL
+  `pass_word` varchar(100) NOT NULL,
+  `phone` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user`, `pass_word`) VALUES
-('admin', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
-('johnberlien@gmail.com', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b');
+INSERT INTO `user` (`user`, `pass_word`, `phone`) VALUES
+('admin', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b', NULL),
+('johnberlien@gmail.com', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b', '1234567890'),
+('laurenberlien@gmail.com', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b', '1234567890');
 
 --
 -- Indexes for dumped tables
@@ -325,7 +319,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cake`
 --
 ALTER TABLE `cake`
-  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `custom`
@@ -337,13 +331,13 @@ ALTER TABLE `custom`
 -- AUTO_INCREMENT for table `dessert_item`
 --
 ALTER TABLE `dessert_item`
-  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `dessert_order`
 --
 ALTER TABLE `dessert_order`
-  MODIFY `dessert_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `dessert_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- Constraints for dumped tables
