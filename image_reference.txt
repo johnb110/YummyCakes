@@ -12,3 +12,26 @@ frosted_sugar_cookies.jpg: https://www.cookingclassy.com/perfect-frosted-sugar-c
 snickerdoodles.jpg: https://cookiesandcups.com/perfect-snickerdoodles/
 brownies.jpg: https://bakingamoment.com/simply-perfect-brownies-from-scratch/
 cheesecake_bites.jpg: https://www.berries.com/product/9-Chocolate-Covered-Strawberry-Cheesecake-Bites-30176527?sk=&ref=SSSorganicgglunkwn&prid=sbseogu&productGroup=SHM&viewpos=15&ratings=4.6557&reviews=61&trackingpgroup=SHM
+butter_cake_chocolate_frosting.jpg: https://www.thatskinnychickcanbake.com/yellow-butter-cake-chocolate-icing/
+chocolate_muffins.jpg: https://bakingamoment.com/double-chocolate-crumb-muffins/
+blueberry_muffins.jpg: https://www.wholesomeyum.com/recipes/keto-low-carb-paleo-blueberry-muffins-recipe-almond-flour/
+lemon_poppyseed_muffins.jpg: https://www.readyseteat.com/recipes-Lemon-Poppy-Seed-Muffins-1974
+cinnamon_streusel_muffins.jpg: https://www.wilton.com/cinnamon-streusel-muffins/WLRECIP-412.html
+bran_muffins.jpg: https://www.williams-sonoma.com/recipe/honey-raisin-bran-muffins.html
+lemon_bars.jpg: https://barefootcontessa.com/recipes/lemon-bars
+peanut_butter_brownies.jpg: https://www.crazyforcrust.com/fudgy-peanut-butter-swirl-brownies/
+strawberry_cake_vanilla_frosting.jpg: https://www.bakefromscratch.com/natural-strawberry-cake-browned-butter-frosting/
+white_chocolate_macadamia_nut_cookies.jpg: https://flippindelicious.com/2018/06/gluten-free-white-chocolate-macadamia-nut-cookies-recipe.html
+chocolate_chocolate_chip_cookies.jpg: https://www.verybestbaking.com/recipes/105058/ultimate-chocolate-chocolate-chip-cookies
+lemon_cookies.jpg: https://belleofthekitchen.com/2016/03/25/white-chocolate-lemon-sugar-cookies/
+chocolate_peanut_butter_cookies.jpg: https://www.tasteofhome.com/recipes/chocolate-peanut-butter-chip-cookies/
+oatmeal_raisin_cookies.jpg: https://lifemadesimplebakes.com/2015/03/soft-n-chewy-oatmeal-raisin-cookies/
+chocolate_chocolate_cake.jpg: https://www.allrecipes.com/recipe/17528/extreme-chocolate-cake/
+chocolate_peanut_butter_cake.jpg: https://chewonthis.blog/chocolate-peanut-butter-ice-cream-cake/
+coffee_cake.jpg: https://www.myrecipes.com/recipe/coffee-cake-pound-cake
+french_cruller_donuts.jpg: http://www.recipe4living.com/recipes/copycat_dunkin_donuts_french_crullers.htm
+tiger_butter.jpg: https://www.verybestbaking.com/recipes/129441/tiger-butter/
+cake_batter_fudge.jpg: https://www.shugarysweets.com/cake-batter-fudge/
+peanut_butter_fudge.jpg: https://www.jif.com/recipes/peanut-butter-fudge-142
+
+

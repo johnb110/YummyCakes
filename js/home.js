@@ -248,6 +248,12 @@ function get_items() {
             $("#prev-page").prop('disabled', (page == 1));
             $("#next-page").prop('disabled', (page == pages));
 
+            if (page > pages) {
+                $("#page").text("1"); 
+                get_items(); 
+                return; 
+            }
+
             for (var i in items) {
                 var item; 
                 if (admin) {
@@ -316,9 +322,9 @@ function add_handlers_to_form($form) {
                 }
                 item = new DessertItemAdmin(JSON.parse(response));
                 $form[0].reset(); 
+                $img.attr('src', ''); 
                 alert($new_item.name + " added!"); 
                 get_items(); 
-                //$("#item-list").append(item.getHTML()); 
             }
         }); 
 

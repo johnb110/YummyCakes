@@ -86,7 +86,7 @@ function get_number(str) {
     return all_nums.join("");
 }
 
-function send (action) {
+function login () {
     var $email = $("#email").val();
     var $password  = $("#password").val(); 
     if (!checkEmail($email) && $email !== "admin") {
@@ -115,8 +115,18 @@ function send (action) {
 
 $(function (){
     $("#phone").mask("(000) 000-0000"); 
-    $("#login").click(function() {
-        send("login");
+    $("#email").change(function() {
+        var email = $(this).val(); 
+        if (email == "admin") {
+            $(this).prop("type", "text"); 
+        }
+        else {
+            $(this).prop("type", "email"); 
+        }
+    })
+    $("form").submit(function() {
+        login();
+        return false; 
     });
     $("#register").click(function(event) {
         event.preventDefault(); 

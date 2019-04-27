@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2019 at 11:13 PM
+-- Generation Time: Apr 28, 2019 at 01:05 AM
 -- Server version: 10.1.38-MariaDB
--- PHP Version: 7.3.2
+-- PHP Version: 7.3.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -108,7 +108,8 @@ INSERT INTO `cake` (`cake`, `flavor`, `frosting`, `filling`, `preset`, `availabl
 (5, 61, 67, 73, 0, 1),
 (6, 61, 67, 72, 1, 1),
 (7, 63, 67, 73, 1, 1),
-(10, 64, 68, 72, 1, 1);
+(10, 64, 68, 72, 1, 1),
+(11, 61, 70, 72, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -181,23 +182,29 @@ INSERT INTO `dessert_item` (`dessert_item`, `name`, `category`, `image_file_name
 (31, 'Snickerdoodles', 'cookies', 'snickerdoodles.jpg', 'Cookies baked with cinnamon and sugar (6)', '5.99', 1, NULL),
 (32, 'Chocolate Cupcakes', 'cupcakes', 'chocolate_cupcakes.jpg', 'Chocolate cupcakes with chocolate frosting (4)', '4.99', 1, NULL),
 (34, 'Custom Cake', 'cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 5),
-(35, 'Custom Cake', 'cake', NULL, 'Flavor: Chocolate, Frosting: Chocolate, Filling: [None]', '0.32', 1, 6),
-(41, 'Brownies', 'brownies', 'brownies.jpg', 'Yummy brownies! (6)', '12.99', 1, NULL),
+(35, 'Chocolate Chocolate Cake', 'cake', 'chocolate_chocolate_cake.jpg', 'Chocolate inside, chocolate outside! Chocolate everywhere!', '0.32', 1, 6),
+(41, 'Fudge Brownies', 'brownies', 'brownies.jpg', 'Yummy brownies! (6)', '10.99', 1, NULL),
 (44, 'Cheesecake Bites', 'other', 'cheesecake_bites.jpg', 'Chocolate-covered strawberry cheesecake bites (10)', '19.99', 1, NULL),
-(45, 'Custom Cake', 'cake', 'null', 'Flavor: Butter, Frosting: Chocolate, Filling: Chocolate Pudding', '0.32', 1, 7),
-(48, 'Blueberry Muffin', 'muffins', 'null', 'Muffins baked with fresh, wild blueberries.', '1.99', 1, NULL),
-(49, 'Lemon Poppyseed Muffin', 'muffins', NULL, 'Yummy', '1.99', 1, NULL),
-(50, 'Cinnamon Streusel Muffin', 'muffins', NULL, 'Yummy', '1.99', 1, NULL),
-(52, 'Chocolate Chip Muffin', 'muffins', NULL, 'Chocolate muffins baked with chocolate chips.', '1.99', 1, NULL),
-(53, 'Bran Muffin', 'muffins', NULL, 'Icky', '1.99', 1, NULL),
-(57, 'Lemon Bars', 'other', NULL, 'Lemon bars sprinkled with powdered sugar (6)', '4.99', 1, NULL),
-(60, 'Peanut Butter Brownies', 'brownies', NULL, 'Yummy peanut butter brownies (so good)', '6.99', 1, NULL),
-(61, 'Custom Cake', 'cake', NULL, 'Flavor: Strawberry, Frosting: Vanilla, Filling: [None]', '0.32', 1, 10),
-(62, 'White Chocolate Macadamia Nut Cookies', 'cookies', NULL, 'Cookies with white chocolate chips and macadamia nuts!', '5.99', 1, NULL),
-(63, 'Chocolate Chocolate Chip Cookies', 'cookies', NULL, 'Chocolate cookies with chocolate chips - lots of chocolate!', '6.99', 1, NULL),
-(64, 'Lemon Cookies', 'cookies', NULL, 'Lemon-flavored cookies!', '5.99', 1, NULL),
-(65, 'Chocolate Peanut Butter Cookies', 'cookies', NULL, 'Peanut butter sandwich cookies covered in chocolate!', '7.99', 1, NULL),
-(66, 'Oatmeal Raisin Cookies', 'cookies', NULL, 'Because you have to throw in oatmeal raisin, I guess. Who likes these, anyway?', '3.99', 1, NULL);
+(45, 'Classic Butter Cake', 'cake', 'butter_cake_chocolate_frosting.jpg', 'Yellow butter cake with chocolate frosting. A classic!', '0.32', 1, 7),
+(48, 'Blueberry Muffin', 'muffins', 'blueberry_muffins.jpg', 'Muffin baked with fresh, wild blueberries.', '1.99', 1, NULL),
+(49, 'Lemon Poppyseed Muffin', 'muffins', 'lemon_poppyseed_muffins.jpg', 'Lemon muffin with poppy seeds baked in!', '1.99', 1, NULL),
+(50, 'Cinnamon Streusel Muffin', 'muffins', 'cinnamon_streusel_muffins.jpg', 'Muffin baked with cinnamon and streusel on top!', '1.99', 1, NULL),
+(52, 'Chocolate Chip Muffin', 'muffins', 'chocolate_muffins.jpg', 'Chocolate muffin baked with chocolate chips.', '1.99', 1, NULL),
+(53, 'Bran Muffin', 'muffins', 'bran_muffins.jpg', 'Bran muffins aren\'t very good but some people like them.', '1.99', 1, NULL),
+(57, 'Lemon Bars', 'other', 'lemon_bars.jpg', 'Lemon bars sprinkled with powdered sugar (6)', '4.99', 1, NULL),
+(60, 'Peanut Butter Brownies', 'brownies', 'peanut_butter_brownies.jpg', 'Yummy peanut butter brownies (so good) (6)', '13.99', 1, NULL),
+(61, 'Strawberry Cake', 'cake', 'strawberry_cake_vanilla_frosting.jpg', 'Strawberry-flavored cake with vanilla frosting!', '0.32', 1, 10),
+(62, 'White Chocolate Macadamia Nut Cookies', 'cookies', 'white_chocolate_macadamia_nut_cookies.jpg', 'Cookies with white chocolate chips and macadamia nuts!', '5.99', 1, NULL),
+(63, 'Chocolate Chocolate Chip Cookies', 'cookies', 'chocolate_chocolate_chip_cookies.jpg', 'Chocolate cookies with chocolate chips - lots of chocolate!', '6.99', 1, NULL),
+(64, 'Lemon Cookies', 'cookies', 'lemon_cookies.jpg', 'Lemon-flavored cookies!', '5.99', 1, NULL),
+(65, 'Chocolate Peanut Butter Cookies', 'cookies', 'chocolate_peanut_butter_cookies.jpg', 'Peanut butter sandwich cookies covered in chocolate!', '7.99', 1, NULL),
+(66, 'Oatmeal Raisin Cookies', 'cookies', 'oatmeal_raisin_cookies.jpg', 'Because you have to throw in oatmeal raisin, I guess. Who likes these, anyway?', '3.99', 1, NULL),
+(67, 'Chocolate Peanut Butter Cake', 'cake', 'chocolate_peanut_butter_cake.jpg', 'Chocolate cake with peanut butter frosting. Made with real peanut butter!', '0.32', 1, 11),
+(68, 'Coffee Cake', 'baked goods', 'coffee_cake.jpg', 'Coffee pound cake with cinnamon and pecans!', '8.99', 1, NULL),
+(69, 'French Cruller Donuts', 'baked goods', 'french_cruller_donuts.jpg', 'Delicious french cruller donuts with a sweet glaze! (4)', '7.99', 1, NULL),
+(70, 'Tiger Butter', 'fudge', 'tiger_butter.jpg', 'Fudge made with peanut butter and chocolate mixed together!', '5.99', 1, NULL),
+(71, 'Cake Batter Fudge', 'fudge', 'cake_batter_fudge.jpg', 'Fudge made with cake batter! And sprinkles!', '7.99', 1, NULL),
+(72, 'Peanut Butter Fudge', 'fudge', 'peanut_butter_fudge.jpg', 'Fudge made with creamy peanut butter!', '5.99', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -220,7 +227,8 @@ CREATE TABLE `dessert_order` (
 
 INSERT INTO `dessert_order` (`dessert_order`, `user`, `total_cost`, `placed`, `expected`, `comments`) VALUES
 (32, 'johnberlien@gmail.com', '2.99', '2019-04-18', '2019-04-25', 'Yummy!'),
-(33, 'johnberlien@gmail.com', '11.96', '2019-04-26', '2019-05-03', 'Yum!');
+(33, 'johnberlien@gmail.com', '11.96', '2019-04-26', '2019-05-03', 'Yum!'),
+(34, 'johnberlien@gmail.com', '20.48', '2019-04-27', '2019-05-04', 'I want my cake!');
 
 -- --------------------------------------------------------
 
@@ -242,7 +250,8 @@ CREATE TABLE `order_item` (
 
 INSERT INTO `order_item` (`dessert_order`, `dessert_item`, `cake_size`, `cost`, `quantity`) VALUES
 (32, 25, NULL, '0.00', 1),
-(33, 25, NULL, '0.00', 4);
+(33, 25, NULL, '0.00', 4),
+(34, 35, 8, '0.00', 1);
 
 -- --------------------------------------------------------
 
@@ -319,7 +328,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cake`
 --
 ALTER TABLE `cake`
-  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `cake` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `custom`
@@ -331,13 +340,13 @@ ALTER TABLE `custom`
 -- AUTO_INCREMENT for table `dessert_item`
 --
 ALTER TABLE `dessert_item`
-  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `dessert_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT for table `dessert_order`
 --
 ALTER TABLE `dessert_order`
-  MODIFY `dessert_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `dessert_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Constraints for dumped tables
