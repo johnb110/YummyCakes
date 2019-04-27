@@ -81,8 +81,9 @@ if ($_POST['action'] == "login") {
 }
 else if ($_POST['action'] == "register") {
     if (!check_user_exists($email, $link)) {
+        $phone = mysqli_real_escape_string($link, trim($_POST['phone'])); 
         $hashed = hash("sha256", $password); 
-        $query = "CALL add_new_user('".$email."','".$hashed."')";
+        $query = "CALL add_new_user('$email','$hashed', '$phone')";
         if (!mysqli_query($link, $query)) {
             echo "ERROR_ADD_FAILED"; 
             mysqli_close($link);

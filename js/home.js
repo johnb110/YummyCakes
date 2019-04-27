@@ -316,6 +316,7 @@ function add_handlers_to_form($form) {
                 }
                 item = new DessertItemAdmin(JSON.parse(response));
                 $form[0].reset(); 
+                alert($new_item.name + " added!"); 
                 get_items(); 
                 //$("#item-list").append(item.getHTML()); 
             }

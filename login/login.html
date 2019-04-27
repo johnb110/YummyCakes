@@ -16,28 +16,39 @@
             <h4>Login or register your account</h4>
             <form class="border border-rounded border-primary p-4">
                 <div class="inside-form">
-                    <div class="form-row form-group">
+                    <div id="email-container" class="form-row form-group">
                         <div class="col-xs-4">
-                            <input type="email" name="email" class="form-control input-lg text-center" placeholder="Email Address">
+                            <input type="email" name="email" id="email" class="form-control input-lg text-center" placeholder="Email Address">
                         </div>
                     </div>
-                    <div class="form-row form-group">
+                    <div id="phone-container" class="form-row form-group" hidden="true">
                         <div class="col-xs-4">
-                            <input type="password" name="password" class="form-control input-lg col-xs-4 text-center" placeholder="Password">
+                            <input name="phone" id="phone" type="tel" class="form-control input-lg text-center" placeholder="Phone">
                         </div>
                     </div>
-                    <div class="form-row form-group text-center">
-                        <button type="button" name="login" class="btn btn-primary">Login</button>
+                    <div id="password-container" class="form-row form-group">
+                        <div class="col-xs-4">
+                            <input type="password" name="password" id="password" class="form-control input-lg text-center" placeholder="Password">
+                        </div>
                     </div>
-                    <div class="form-row text-center">
-                        <button type="button" name="register" class="btn btn-primary">Register</button>
+                    <div id="pass-confirm-container" class="form-row form-group" hidden="true">
+                        <div class="col-xs-4">
+                            <input type="password" name="pass-confirm" id="pass-confirm" class="form-control input-lg text-center" placeholder="Confirm Password">
+                        </div>
                     </div>
-                    <div id="help-text" class="form-row text-center">
+                    <div id="login-container" class="form-row form-group text-center">
+                        <button type="submit" name="login" id="login" class="btn btn-primary">Login</button>
+                    </div>
+                    <div id="register-container" class="form-row text-center">
+                        <button type="button" name="register" id="register" class="btn btn-primary">Register</button>
+                    </div>
+                    <div id="help-text" class="form-row text-center text-danger">
                     </div>
                 </div>
             </form>
         </main>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
         <script src="../js/login.js"></script>
     </body>
     

@@ -39,7 +39,7 @@ class OrderItem {
     }
 
     getHTMLObject() {
-        var $item = $("<div>", { class : "d-flex flex-column" }); 
+        var $item = $("<div>", { class : "d-flex flex-column list-group-item" }); 
         $item.append($("<p>", {text : this.name })); 
         $item.append($("<p>", {text : this.description}));
         if (this.cake_size) {
