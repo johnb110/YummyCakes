@@ -33,5 +33,4 @@ french_cruller_donuts.jpg: http://www.recipe4living.com/recipes/copycat_dunkin_d
 tiger_butter.jpg: https://www.verybestbaking.com/recipes/129441/tiger-butter/
 cake_batter_fudge.jpg: https://www.shugarysweets.com/cake-batter-fudge/
 peanut_butter_fudge.jpg: https://www.jif.com/recipes/peanut-butter-fudge-142
-
-
+favicon.ico: https://www.vectorstock.com/royalty-free-vector/two-layered-birthday-cake-icon-with-cherry-on-top-vector-17218664

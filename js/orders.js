@@ -60,7 +60,8 @@ $(function() {
             //alert(json); 
             if (!json) {
                 $("main").prepend($("<p>", {text : "You don't have any orders"})); 
-                $("#place-order").remove(); 
+                $("h4").remove(); 
+                //$("#place-order").remove(); 
                 return; 
             }
             else if (typeof(json) == "string" && json.indexOf("ERROR") != -1) {
@@ -70,6 +71,8 @@ $(function() {
             orders = JSON.parse(json); 
             if (orders.length == 0) {
                 $("main").prepend($("<p>", {text : "You don't have any orders"})); 
+                $("h4").remove(); 
+                $("#place-order").remove();
                 return;
             }
             for (var i in orders) {
